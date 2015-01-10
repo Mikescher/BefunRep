@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BefunRep.Log;
+using System;
 using System.IO;
 using System.Text;
 
@@ -150,7 +151,7 @@ namespace BefunRep.FileHandling
 		{
 			long new_valueEnd = key + buffer;
 
-			Console.Out.WriteLine(String.Format("[{0:HH:mm:ss}] Update Safe Size Right (from {1} to {2})", DateTime.Now, valueEnd, new_valueEnd));
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Update Safe Size Right (from {1} to {2})", DateTime.Now, valueEnd, new_valueEnd);
 
 			valueEnd = new_valueEnd;
 			fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * codeLength);
@@ -162,7 +163,7 @@ namespace BefunRep.FileHandling
 		{
 			long new_valueStart = key - buffer;
 
-			Console.Out.WriteLine(String.Format("[{0:HH:mm:ss}] Update Safe Size Left (from {1} to {2})", DateTime.Now, valueStart, new_valueStart));
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Update Safe Size Left (from {1} to {2})", DateTime.Now, valueStart, new_valueStart);
 
 			fstream.SetLength(HEADER_SIZE + (valueEnd - new_valueStart) * codeLength);
 			moveRight(valueEnd - valueStart, valueStart - new_valueStart);
@@ -175,7 +176,7 @@ namespace BefunRep.FileHandling
 		{
 			int new_codeLength = Math.Max(codeLength + (len - codeLength) * 2, codeLength * 2);
 
-			Console.Out.WriteLine(String.Format("[{0:HH:mm:ss}] Update Safe Code Length (from {1} to {2})", DateTime.Now, codeLength, new_codeLength));
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Update Safe Code Length (from {1} to {2})", DateTime.Now, codeLength, new_codeLength);
 
 			fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * new_codeLength);
 

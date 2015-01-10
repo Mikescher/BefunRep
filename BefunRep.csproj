@@ -64,6 +64,7 @@
     <Compile Include="FileHandling\BinarySafe.cs" />
     <Compile Include="FileHandling\CSVSafe.cs" />
     <Compile Include="FileHandling\JSONSafe.cs" />
+    <Compile Include="Log\ConsoleLogger.cs" />
     <Compile Include="OutputHandling\DummyOutputFormatter.cs" />
     <Compile Include="OutputHandling\XMLOutputFormatter.cs" />
     <Compile Include="OutputHandling\JSONOutputFormatter.cs" />

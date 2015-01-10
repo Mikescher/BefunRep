@@ -1,5 +1,6 @@
 ﻿using BefunRep.Algorithms;
 using BefunRep.FileHandling;
+using BefunRep.Log;
 using BefunRep.Test;
 using System;
 using System.Linq;
@@ -98,7 +99,7 @@ namespace BefunRep
 			time = Environment.TickCount - time;
 			algorithmTime[algonum] += time;
 
-			Console.Out.WriteLine(String.Format("[{0:HH:mm:ss}] Algorithm {1} Finished (+{2})", DateTime.Now, algorithmNames[algonum], algofound));
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Algorithm {1} Finished (+{2})", DateTime.Now, algorithmNames[algonum], algofound);
 
 			return algofound;
 		}
@@ -123,7 +124,7 @@ namespace BefunRep
 				if (!quiet)
 				{
 					if (before != "")
-						Console.Out.WriteLine(
+						ConsoleLogger.WriteLine(
 							String.Format("[{0:HH:mm:ss}] {1,16} Found: {2,11}  ->  {3,-24} (before {4,-16} {5,-24} = +{6})",
 								DateTime.Now,
 								algo.GetType().Name.Replace("Algorithm", ""),
@@ -134,7 +135,7 @@ namespace BefunRep
 								before.Length - result.Length)
 							);
 					else
-						Console.Out.WriteLine(
+						ConsoleLogger.WriteLine(
 							String.Format("[{0:HH:mm:ss}] {1,16} Found: {2,11}  ->  {3,-24}",
 								DateTime.Now,
 								algo.GetType().Name.Replace("Algorithm", ""),
