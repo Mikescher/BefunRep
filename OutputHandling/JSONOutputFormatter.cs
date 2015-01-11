@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BefunRep.FileHandling;
+using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 
@@ -6,17 +7,14 @@ namespace BefunRep.OutputHandling
 {
 	public class JSONOutputFormatter : OutputFormatter
 	{
-		public JSONOutputFormatter(string path)
-			: base(path)
+		public JSONOutputFormatter()
+			: base()
 		{
 			//
 		}
 
-		public override void Output(FileHandling.RepresentationSafe safe)
+		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{
-			long min = safe.getLowestValue();
-			long max = safe.getHighestValue();
-
 			var data = CustomExtensions
 				.LongRange(min, max)
 				.Where(p => safe.get(p) != null)

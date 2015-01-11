@@ -55,3 +55,22 @@ Set Up
 You don't need other [BefunUtils](https://github.com/Mikescher/BefunUtils) projects to run this.  
 Theoretically you can only clone this repository and run it.  
 But it could be useful to get the whole BefunUtils solution like described [here](https://github.com/Mikescher/BefunUtils/blob/master/README.md)  
+
+Commandline parameters
+======================
+
+Parameter   | Description
+------------|-------------------------------------------
+lower       | The lower bound for generation (will be retrieved automatically when an existing safe file is provided)
+upper       | The upper bound for generation
+notest      | Don't automatically test generated code
+quiet       | Don't output every improvement to the console/log
+reset       | Reset the current safe file
+algorithm   | Only use one specific algorithm
+safe        | The safe file to use (or create a new one if the file does not exist)
+out         | The output file, specify the format via the file extension (csv, json, xml). If this is not set no output file will be generated
+iterations  | The amount of iteratoins the program will run (`0` won't generate new numbers and `-1` will run until there are no more improvements to be made)
+stats       | The amount of statistics to display at the end
+log         | The log file where every console output is logged. This can either be a file or a directory.
+maxoutput   | The maximum number of numbers in a single output file before it is split into multiple files.
+help        | Show the summary of all commands

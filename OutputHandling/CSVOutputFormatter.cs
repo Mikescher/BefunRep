@@ -6,18 +6,16 @@ namespace BefunRep.OutputHandling
 {
 	public class CSVOutputFormatter : OutputFormatter
 	{
-		public CSVOutputFormatter(string path)
-			: base(path)
+		public CSVOutputFormatter()
+			: base()
 		{
 			//
 		}
 
-		public override void Output(RepresentationSafe safe)
+		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{
 			using (StreamWriter writer = new StreamWriter(filepath))
 			{
-				long min = safe.getLowestValue();
-				long max = safe.getHighestValue();
 				for (long v = min; v < max; v++)
 				{
 					string rep = safe.get(v);

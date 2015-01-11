@@ -5,12 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BefunRep
 {
 	class Program
 	{
-		public const string VERSION = "1.0";
+		public const string VERSION = "1.1";
 		public const string TITLE = "BefunRep";
 
 		private readonly DateTime startTime = DateTime.Now;
@@ -24,6 +26,7 @@ namespace BefunRep
 		private int algorithm;
 		private string safepath;
 		private string outpath;
+		private long maxoutputsize;
 		private bool quiet;
 		private int iterations;
 		private string logpath;
@@ -94,7 +97,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Started.", DateTime.Now);
 
 			safe.start();
-			formatter.Output(safe);
+			formatter.Output(safe, outpath, maxoutputsize);
 			safe.stop();
 
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Finished.", DateTime.Now);
@@ -109,7 +112,9 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 
 			ConsoleLogger.save(); // ############# ENDE #############
-			printAnyKeyMessage();
+
+			if (logpath == null)
+				printAnyKeyMessage();
 		}
 
 		[ConditionalAttribute("DEBUG")]
@@ -163,6 +168,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine("-iterations=[-1 | 0-n ]");
 			ConsoleLogger.WriteLine("-stats=[0-3]");
 			ConsoleLogger.WriteLine("-log={directory of file}");
+			ConsoleLogger.WriteLine("-maxoutput=[-1 | 1-n]");
 			ConsoleLogger.WriteLine("-help");
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine("################################");
@@ -178,27 +184,29 @@ namespace BefunRep
 				upperBoundary,
 				boundaryDiscovery ? "      (via auto discovery)" : "");
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Iterations := {1}", DateTime.Now, iterations < 0 ? "INF" : (iterations == 0 ? "NONE" : (iterations.ToString())));
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Iterations    := {1}", DateTime.Now, iterations < 0 ? "INF" : (iterations == 0 ? "NONE" : (iterations.ToString())));
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Testing    := {1}", DateTime.Now, testResults.ToString().ToLower());
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Testing       := {1}", DateTime.Now, testResults.ToString().ToLower());
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Reset      := {1}", DateTime.Now, doReset.ToString().ToLower());
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Reset         := {1}", DateTime.Now, doReset.ToString().ToLower());
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Quiet      := {1}", DateTime.Now, quiet.ToString().ToLower());
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Quiet         := {1}", DateTime.Now, quiet.ToString().ToLower());
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Statistics := {1}", DateTime.Now, new string[] { "none", "simple", "verbose", "all" }[statsLevel]);
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Statistics    := {1}", DateTime.Now, new string[] { "none", "simple", "verbose", "all" }[statsLevel]);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Algorithm  := {1}", DateTime.Now, algorithm == -1 ? "all" : RepCalculator.algorithmNames[algorithm]);
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Algorithm     := {1}", DateTime.Now, algorithm == -1 ? "all" : RepCalculator.algorithmNames[algorithm]);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safetype   := {1}", DateTime.Now, safe.GetType().Name);
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safetype      := {1}", DateTime.Now, safe.GetType().Name);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safepath   := {1}", DateTime.Now, safepath);
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safepath      := {1}", DateTime.Now, safepath);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputtype := {1}", DateTime.Now, formatter.GetType().Name);
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputtype    := {1}", DateTime.Now, formatter.GetType().Name);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputpath := {1}", DateTime.Now, outpath);
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputpath    := {1}", DateTime.Now, outpath);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Logpath := {1}", DateTime.Now, logpath ?? "<NULL>");
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] MaxOutputSize := {1}", DateTime.Now, maxoutputsize);
+
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Logpath       := {1}", DateTime.Now, logpath ?? "<NULL>");
 
 			ConsoleLogger.WriteLine();
 		}
@@ -232,13 +240,13 @@ namespace BefunRep
 			if (outpath != null)
 			{
 				if (outpath.ToLower().EndsWith(".csv"))
-					formatter = new CSVOutputFormatter(outpath);
+					formatter = new CSVOutputFormatter();
 				else if (outpath.ToLower().EndsWith(".json"))
-					formatter = new JSONOutputFormatter(outpath);
+					formatter = new JSONOutputFormatter();
 				else if (outpath.ToLower().EndsWith(".xml"))
-					formatter = new XMLOutputFormatter(outpath);
+					formatter = new XMLOutputFormatter();
 				else
-					formatter = new CSVOutputFormatter(outpath);
+					formatter = new CSVOutputFormatter();
 			}
 			else
 			{
@@ -263,6 +271,7 @@ namespace BefunRep
 			outpath = cmda.GetStringDefault("out", null);
 			iterations = cmda.GetIntDefault("iterations", 1);
 			logpath = cmda.GetStringDefault("log", null);
+			maxoutputsize = cmda.GetLongDefault("maxoutput", -1);
 			return cmda;
 		}
 
@@ -294,9 +303,10 @@ namespace BefunRep
 
 				for (int i = 0; i < RepCalculator.algorithmTime.Length; i++)
 				{
-					ConsoleLogger.WriteLineFormatted("Time per algorithm {0, 24}: {1,6} ms",
+					ConsoleLogger.WriteLineFormatted("Time per algorithm {0, 24}: {1,6} ms (= {2,-20} )",
 						RepCalculator.algorithmNames[i],
-						RepCalculator.algorithmTime[i]);
+						RepCalculator.algorithmTime[i],
+						FormatMilliseconds(RepCalculator.algorithmTime[i]));
 				}
 
 				ConsoleLogger.WriteLine();
@@ -342,6 +352,26 @@ namespace BefunRep
 			}
 
 			safe.stop();
+		}
+
+		public static string FormatTimespan(TimeSpan ts)
+		{
+			var parts = string
+							.Format("{0}d:{1}h:{2}m:{3}s:{4}ms", ts.Days, ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds)
+							.Split(':')
+							.SkipWhile(s => Regex.Match(s, @"0\w").Success); // skip zero-valued components
+
+			var join = string.Join(" ", parts);
+
+			if (join == "")
+				join = "0ms";
+
+			return join;
+		}
+
+		public static string FormatMilliseconds(long ms)
+		{
+			return FormatTimespan(TimeSpan.FromMilliseconds(ms));
 		}
 	}
 }

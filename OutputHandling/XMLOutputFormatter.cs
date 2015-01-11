@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BefunRep.FileHandling;
+using System;
 using System.IO;
 using System.Security;
 
@@ -6,19 +7,16 @@ namespace BefunRep.OutputHandling
 {
 	public class XMLOutputFormatter : OutputFormatter
 	{
-		public XMLOutputFormatter(string path)
-			: base(path)
+		public XMLOutputFormatter()
+			: base()
 		{
 			//
 		}
 
-		public override void Output(FileHandling.RepresentationSafe safe)
+		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{
 			using (StreamWriter writer = new StreamWriter(filepath))
 			{
-				long min = safe.getLowestValue();
-				long max = safe.getHighestValue();
-
 				writer.WriteLine("<data>");
 
 				for (long v = min; v < max; v++)

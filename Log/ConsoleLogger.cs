@@ -13,13 +13,15 @@ namespace BefunRep.Log
 
 		public static void setPath(string p)
 		{
-			p = p.Trim();
-
 			if (p == null)
 			{
 				savepath = null;
+				return;
 			}
-			else if (p.EndsWith("/") || p.EndsWith("\\"))
+
+			p = p.Trim();
+
+			if (p.EndsWith("/") || p.EndsWith("\\"))
 			{
 				savepath = Path.Combine(p, string.Format("log_{0:yyyy-MM-dd_HH-mm-ss}.txt", DateTime.Now));
 
@@ -40,7 +42,7 @@ namespace BefunRep.Log
 			}
 
 			WriteLine();
-			WriteLine("Logging to " + savepath);
+			WriteLineFormatted("[{0:HH:mm:ss}] Logging to " + savepath, DateTime.Now);
 			WriteLine();
 		}
 
@@ -109,6 +111,8 @@ namespace BefunRep.Log
 		{
 			if (savepath != null)
 			{
+				Directory.CreateDirectory(Path.GetDirectoryName(savepath));
+
 				WriteLine("Saving log ...");
 				File.WriteAllText(savepath, builder.ToString());
 
