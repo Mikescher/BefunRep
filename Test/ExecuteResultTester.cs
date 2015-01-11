@@ -6,11 +6,11 @@ namespace BefunRep.Test
 	{
 		public override bool test(string code, long result, out string error)
 		{
-			CPTester t = new CPTester(code + "@");
+			CPTester t = new CPTester(code);
 
 			try
 			{
-				t.run(1024);
+				t.run();
 			}
 			catch (Exception e)
 			{

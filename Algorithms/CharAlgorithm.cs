@@ -17,7 +17,7 @@ namespace BefunRep.Algorithms
 		{
 			if (value <= -(int)' ' && value >= -(int)'~' && value != -(int)'"')
 			{
-				return "0\"" + (char)(-value) + "\"-";
+				return null;
 			}
 			else if (value >= (int)' ' && value <= (int)'~' && value != (int)'"')
 			{

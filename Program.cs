@@ -60,15 +60,13 @@ namespace BefunRep
 			//##############
 
 			CommandLineArguments cmda = loadCMDA(args);
+			interpreteCMDA(cmda);
 
 			if (cmda.isEmpty() || cmda.IsSet("help"))
 			{
 				printHelp();
 				return;
 			}
-
-
-			interpreteCMDA(cmda);
 
 			RepCalculator r = new RepCalculator(lowerBoundary, upperBoundary, testResults, safe, quiet);
 			outputCMDA();
@@ -179,7 +177,7 @@ namespace BefunRep
 
 		private void outputCMDA()
 		{
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Limits     := [{1}, {2}]{3}", DateTime.Now,
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Limits        := [{1}, {2}]{3}", DateTime.Now,
 				lowerBoundary,
 				upperBoundary,
 				boundaryDiscovery ? "      (via auto discovery)" : "");

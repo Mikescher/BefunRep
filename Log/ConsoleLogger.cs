@@ -94,7 +94,9 @@ namespace BefunRep.Log
 		public static void WriteLine(string s)
 		{
 			Console.Out.WriteLine(s);
-			builder.AppendLine(s);
+
+			if (savepath != null)
+				builder.AppendLine(s);
 
 			writecount++;
 		}
@@ -102,7 +104,9 @@ namespace BefunRep.Log
 		public static void Write(string s)
 		{
 			Console.Out.Write(s);
-			builder.Append(s);
+
+			if (savepath != null)
+				builder.Append(s);
 
 			writecount++;
 		}

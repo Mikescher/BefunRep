@@ -27,12 +27,7 @@ namespace BefunRep.Algorithms
 			}
 			else
 			{
-				string neg = getPositive(-value);
-
-				if (neg == null)
-					return null;
-
-				return "0" + neg + "-";
+				return null;
 			}
 		}
 

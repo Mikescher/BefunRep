@@ -12,7 +12,7 @@ namespace BefunRep.OutputHandling
 			//
 		}
 
-		public void Output(RepresentationSafe safe, string filepath, long maxOutputSize)
+		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize)
 		{
 			long min = safe.getLowestValue();
 			long max = safe.getHighestValue();

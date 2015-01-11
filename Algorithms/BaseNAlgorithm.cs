@@ -28,7 +28,7 @@ namespace BefunRep.Algorithms
 			StringBuilder p = new StringBuilder();
 
 			if (value < 0)
-				return getNegative(-value, befbase);
+				return null;
 			else
 				return getPositive(value, befbase);
 		}
@@ -81,11 +81,6 @@ namespace BefunRep.Algorithms
 			}
 
 			return new String(p_num.ToString().ToCharArray().Reverse().ToArray()) + p_op.ToString();
-		}
-
-		private string getNegative(long value, int befbase)
-		{
-			return "0" + getPositive(value, befbase) + "-";
 		}
 
 		private string ConvertToBase(long decimalNumber, int radix)

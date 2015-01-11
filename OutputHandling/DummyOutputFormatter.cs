@@ -9,6 +9,10 @@ namespace BefunRep.OutputHandling
 		{
 			//
 		}
+		public override void Output(RepresentationSafe safe, string filepath, long maxOutputSize)
+		{
+			// Do nothing
+		}
 
 		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{

@@ -15,7 +15,7 @@ namespace BefunRep.Algorithms
 
 		private const char MIN_ASCII = ' '; // 32
 		private const char MAX_ASCII = '~'; // 126
-		
+
 		public StringifyAlgorithm(byte aid)
 			: base(aid)
 		{
@@ -26,12 +26,7 @@ namespace BefunRep.Algorithms
 		{
 			if (lit < 0)
 			{
-				string p = get(-lit);
-
-				if (p == null)
-					return null;
-
-				return "0" + p + "-";
+				return null;
 			}
 
 			if (lit >= 0 && lit <= 9)

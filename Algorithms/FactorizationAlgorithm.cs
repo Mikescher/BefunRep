@@ -20,12 +20,7 @@ namespace BefunRep.Algorithms
 		{
 			if (lit < 0)
 			{
-				StringBuilder p = new StringBuilder();
-				p.Append('0');
-				getFactors(p, -lit);
-				p.Append('-');
-
-				return p.ToString();
+				return null;
 			}
 			else if (lit == 0)
 			{

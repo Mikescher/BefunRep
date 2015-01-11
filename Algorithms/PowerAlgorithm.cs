@@ -19,14 +19,12 @@ namespace BefunRep.Algorithms
 		public override string get(long value)
 		{
 			if (value > 0)
+			{
 				return getPositive(value);
+			}
 			else
 			{
-				string pos = getPositive(-value);
-				if (pos == null)
-					return null;
-				else
-					return "0" + getPositive(-value) + "-";
+				return null;
 			}
 		}
 

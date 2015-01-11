@@ -1,103 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BefunRep.Test
 {
-	public struct Vector
-	{
-		public int X;
-		public int Y;
-
-		public Vector(int xx, int yy) { X = xx; Y = yy; }
-
-		public void set(int xx, int yy) { X = xx; Y = yy; }
-
-		public void set(int d)
-		{
-			switch (d)
-			{
-				case 0:
-					set(+1, 00);
-					break;
-				case 1:
-					set(00, +1);
-					break;
-				case 2:
-					set(-1, 00);
-					break;
-				case 3:
-					set(00, -1);
-					break;
-			}
-		}
-
-		public bool isZero()
-		{
-			return X == 0 && Y == 0;
-		}
-	}
-
 	public class CPTester
 	{
 		private static Random Rand = new Random();
 
 		public int w;
-		public int h;
 
-		public long[,] raster;
-		public Vector PC;
-		public Vector Delta;
-		public bool Stringmode;
+		public char[] raster;
+		public int PC = 0;
+		public bool Stringmode = false;
 
 		public Stack<long> Stack;
 
-		public StringBuilder Output;
+		public bool finished = false;
 
-		public int StepCount;
-		public bool RandLog;
-
-		public CPTester(string s, bool reversed = false)
+		public CPTester(string s)
 		{
-			string[] lines = s.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+			w = s.Length;
 
-			h = lines.Length;
-			w = lines.Max(p => p.Length);
+			raster = s.ToCharArray();
 
-			raster = new long[w, h];
-
-			for (int x = 0; x < w; x++)
-				for (int y = 0; y < h; y++)
-					raster[x, y] = ' ';
-
-			PC = new Vector(0, 0);
-			Delta = new Vector(1, 0);
 			Stack = new Stack<long>();
-			Output = new StringBuilder();
-			StepCount = 0;
-			Stringmode = false;
-			RandLog = false;
-
-			if (reversed)
-			{
-				Delta.set(-1, 0);
-				PC.X = w - 1;
-			}
-
-			for (int y = 0; y < lines.Length; y++)
-				for (int x = 0; x < lines[y].Length; x++)
-					raster[x, y] = lines[y][x];
 		}
 
-		public bool hadRandomElements()
+		public void run()
 		{
-			return RandLog;
-		}
-
-		public void run(int maxSteps)
-		{
-			while (StepCount < maxSteps && !Delta.isZero())
+			while (!finished)
 			{
 				runSingle();
 			}
@@ -105,33 +36,9 @@ namespace BefunRep.Test
 
 		private void runSingle()
 		{
-			executCmd(raster[PC.X, PC.Y]);
+			executCmd(raster[PC]);
 
 			move();
-
-			StepCount++;
-		}
-
-		public void Set(long x, long y, long chr)
-		{
-			if (x < 0 || y < 0 || x >= w || y >= h)
-				throw new BFRunException("Modification Out Of Raster");
-
-			//if (chr < 0)
-			//	throw new BFRunException("Modification to invalid char");
-
-			raster[x, y] = chr;
-		}
-
-		public long Get(long x, long y)
-		{
-			if (x < 0 || y < 0 || x >= w || y >= h)
-				throw new BFRunException("Reflection Out Of Raster");
-
-			//if (chr < 0)
-			//	throw new BFRunException("Modification to invalid char");
-
-			return raster[x, y];
 		}
 
 		public void Push(long i)
@@ -142,9 +49,7 @@ namespace BefunRep.Test
 		public long Pop()
 		{
 			if (Stack.Count == 0)
-			{
 				throw new BFRunException("Popped an empty stack");
-			}
 
 			return Stack.Pop();
 		}
@@ -152,9 +57,7 @@ namespace BefunRep.Test
 		public long Peek()
 		{
 			if (Stack.Count == 0)
-			{
 				throw new BFRunException("Popped an empty stack");
-			}
 
 			return Stack.Peek();
 		}
@@ -190,7 +93,6 @@ namespace BefunRep.Test
 
 			long t1;
 			long t2;
-			long t3;
 
 			switch (cmd)
 			{
@@ -224,27 +126,20 @@ namespace BefunRep.Test
 					Push(Pop() > t1);
 					break;
 				case '>':
-					Delta.set(1, 0);
-					break;
 				case '<':
-					Delta.set(-1, 0);
-					break;
 				case '^':
-					Delta.set(0, -1);
-					break;
 				case 'v':
-					Delta.set(0, 1);
-					break;
 				case '?':
-					RandLog = true;
-					Delta.set(Rand.Next(4));
-					break;
 				case '_':
-					Delta.set(Pop_b() ? 2 : 0);
-					break;
 				case '|':
-					Delta.set(Pop_b() ? 3 : 1);
-					break;
+				case '.':
+				case ',':
+				case '&':
+				case '~':
+				case 'p':
+				case 'g':
+				case '@':
+					throw new BFRunException("Illegal command: " + cmd);
 				case '"':
 					Stringmode = true;
 					break;
@@ -260,38 +155,8 @@ namespace BefunRep.Test
 				case '$':
 					Pop();
 					break;
-				case '.':
-					Output.Append((int)Pop());
-					break;
-				case ',':
-					Output.Append((char)Pop());
-					break;
 				case '#':
 					move();
-					break;
-				case 'p':
-					t1 = Pop();
-					t2 = Pop();
-					t3 = Pop();
-
-					Set(t2, t1, t3);
-					break;
-				case 'g':
-					t1 = Pop();
-					t2 = Pop();
-
-					Push(Get(t2, t1));
-					break;
-				case '&':
-					RandLog = true;
-					Push(Rand.Next(8192) - 4096);
-					break;
-				case '~':
-					RandLog = true;
-					Push(Rand.Next('~' - ' ') + ' ');
-					break;
-				case '@':
-					Delta.set(0, 0);
 					break;
 				case '0':
 				case '1':
@@ -312,11 +177,10 @@ namespace BefunRep.Test
 
 		private void move()
 		{
-			PC.X += Delta.X;
-			PC.Y += Delta.Y;
+			PC++;
 
-			if (PC.X < 0 || PC.Y < 0 || PC.X >= w || PC.Y >= h)
-				throw new BFRunException("Moved Out Of Raster");
+			if (PC >= w)
+				finished = true;
 		}
 	}
 }
