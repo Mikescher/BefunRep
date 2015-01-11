@@ -20,7 +20,7 @@ namespace BefunRep.Algorithms
 
 		public override string get(long value)
 		{
-			return Enumerable.Range(2, 8).Select(p => get(value, p)).OrderBy(p => p.Length).First();
+			return Enumerable.Range(2, 8).Select(p => get(value, p)).Where(p => p != null).OrderBy(p => p.Length).FirstOrDefault();
 		}
 
 		private string get(long value, int befbase)

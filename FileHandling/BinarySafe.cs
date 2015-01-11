@@ -1,6 +1,5 @@
 ﻿using BefunRep.Log;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -35,9 +34,6 @@ namespace BefunRep.FileHandling
 		private long valueStart;
 		private long valueEnd;
 
-		private Dictionary<long, string> cache = new Dictionary<long, string>();
-		private Dictionary<long, byte?> cacheA = new Dictionary<long, byte?>();
-
 		public BinarySafe(string path, long min, long max)
 		{
 			this.filepath = path;
@@ -51,9 +47,6 @@ namespace BefunRep.FileHandling
 			if (key < valueStart || key >= valueEnd)
 				return null;
 
-			if (cache.ContainsKey(key))
-				return cache[key];
-
 			fstream.Seek(HEADER_SIZE + codeLength * (key - valueStart), SeekOrigin.Begin);
 
 			byte[] read = new byte[codeLength];
@@ -61,7 +54,6 @@ namespace BefunRep.FileHandling
 
 			if (read[0] == 0)
 			{
-				cache[key] = null;
 				return null;
 			}
 
@@ -76,7 +68,6 @@ namespace BefunRep.FileHandling
 
 			var result = b.ToString();
 
-			cache[key] = result;
 			return result;
 		}
 
@@ -85,9 +76,6 @@ namespace BefunRep.FileHandling
 			if (key < valueStart || key >= valueEnd)
 				return null;
 
-			if (cacheA.ContainsKey(key))
-				return cacheA[key];
-
 			fstream.Seek(HEADER_SIZE + codeLength * (key - valueStart), SeekOrigin.Begin);
 
 			byte[] read = new byte[codeLength];
@@ -95,11 +83,9 @@ namespace BefunRep.FileHandling
 
 			if (read[0] == 0)
 			{
-				cacheA[key] = null;
 				return null;
 			}
 
-			cacheA[key] = read[codeLength - 1];
 			return read[codeLength - 1];
 		}
 
@@ -128,9 +114,6 @@ namespace BefunRep.FileHandling
 			write[codeLength - 1] = algorithm;
 
 			fstream.Write(write, 0, codeLength);
-
-			cache[key] = representation;
-			cacheA[key] = algorithm;
 		}
 
 		public override void start()

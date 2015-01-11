@@ -277,10 +277,9 @@ namespace BefunRep
 		{
 			safe.start();
 
-			SafeInfo info = safe.getInformations();
-
 			if (statsLevel >= 1) //############################################
 			{
+				SafeInfo info = safe.getInformations();
 
 				ConsoleLogger.WriteLine("  Statistics  ");
 				ConsoleLogger.WriteLine("##############");
