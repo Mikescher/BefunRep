@@ -14,10 +14,16 @@ namespace BefunRep.Algorithms
 
 		public string calculate(long value)
 		{
-			string old = representations.get(value);
 			string result = get(value);
 
-			if (result == null || result == "" || result == old || (old != null && old.Length <= result.Length))
+			if (result == null || result == "")
+			{
+				return null;
+			}
+
+			string old = representations.get(value);
+
+			if (result == old || (old != null && old.Length <= result.Length))
 			{
 				return null;
 			}

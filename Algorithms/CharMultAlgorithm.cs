@@ -126,8 +126,13 @@ namespace BefunRep.Algorithms
 				if (value == 1)
 				{
 					StringBuilder builder = new StringBuilder();
+
 					while (stack.Count > 0)
-						builder.Append(stack.Pop());
+						if (stack.Peek() != 1)
+							builder.Append(stack.Pop());
+						else
+							stack.Pop();
+
 					string result = builder.ToString();
 					cache.Add(initv, result);
 					return result;

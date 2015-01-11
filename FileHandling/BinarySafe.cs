@@ -1,5 +1,6 @@
 ﻿using BefunRep.Log;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace BefunRep.FileHandling
 	/// </summary>
 	public class BinarySafe : RepresentationSafe
 	{
-		private const int INITIAL_CODE_LEN = 32; // Wird von Base9 erst bei über 4.782.969 gesprengt    (enthält das eine byte für den algo)
+		private const int INITIAL_CODE_LEN = 32; // Wird von Base9 erst bei über 43.046.720 gesprengt    (enthält das eine byte für den algo)
 		private readonly long INITIAL_VALUE_START;
 		private readonly long INITIAL_VALUE_END;
 
@@ -33,6 +34,9 @@ namespace BefunRep.FileHandling
 
 		private long valueStart;
 		private long valueEnd;
+
+		private Dictionary<long, string> cache = new Dictionary<long, string>();
+		private Dictionary<long, byte?> cacheA = new Dictionary<long, byte?>();
 
 		public BinarySafe(string path, long min, long max)
 		{
@@ -47,13 +51,19 @@ namespace BefunRep.FileHandling
 			if (key < valueStart || key >= valueEnd)
 				return null;
 
+			if (cache.ContainsKey(key))
+				return cache[key];
+
 			fstream.Seek(HEADER_SIZE + codeLength * (key - valueStart), SeekOrigin.Begin);
 
 			byte[] read = new byte[codeLength];
 			fstream.Read(read, 0, codeLength);
 
 			if (read[0] == 0)
+			{
+				cache[key] = null;
 				return null;
+			}
 
 			StringBuilder b = new StringBuilder();
 			for (int i = 0; i < codeLength; i++)
@@ -64,7 +74,10 @@ namespace BefunRep.FileHandling
 				b.Append((char)read[i]);
 			}
 
-			return b.ToString();
+			var result = b.ToString();
+
+			cache[key] = result;
+			return result;
 		}
 
 		public override byte? getAlgorithm(long key)
@@ -72,14 +85,21 @@ namespace BefunRep.FileHandling
 			if (key < valueStart || key >= valueEnd)
 				return null;
 
+			if (cacheA.ContainsKey(key))
+				return cacheA[key];
+
 			fstream.Seek(HEADER_SIZE + codeLength * (key - valueStart), SeekOrigin.Begin);
 
 			byte[] read = new byte[codeLength];
 			fstream.Read(read, 0, codeLength);
 
 			if (read[0] == 0)
+			{
+				cacheA[key] = null;
 				return null;
+			}
 
+			cacheA[key] = read[codeLength - 1];
 			return read[codeLength - 1];
 		}
 
@@ -108,6 +128,9 @@ namespace BefunRep.FileHandling
 			write[codeLength - 1] = algorithm;
 
 			fstream.Write(write, 0, codeLength);
+
+			cache[key] = representation;
+			cacheA[key] = algorithm;
 		}
 
 		public override void start()

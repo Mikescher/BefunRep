@@ -24,7 +24,7 @@ namespace BefunRep
 			new CharMultAlgorithm(9),			// [9]
 		};
 
-		public static string[] algorithmNames { get { return algorithms.Select(p => p.GetType().Name.Replace("Algorithm", "")).ToArray(); } }
+		public static string[] algorithmNames = algorithms.Select(p => p.GetType().Name.Replace("Algorithm", "")).ToArray();
 		public static long[] algorithmTime = new long[algorithms.Length];
 
 		private readonly long lowerB;

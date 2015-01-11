@@ -180,6 +180,9 @@ namespace BefunRep.Test
 				}
 				else
 				{
+					if (cmd < ' ' || cmd > '~')
+						throw new BFRunException("Inknown SM charcater: '" + (char)cmd + "' (" + cmd + ")");
+
 					Push(cmd);
 					return;
 				}
