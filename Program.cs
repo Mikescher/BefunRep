@@ -3,7 +3,6 @@ using BefunRep.Log;
 using BefunRep.OutputHandling;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -115,7 +114,6 @@ namespace BefunRep
 				printAnyKeyMessage();
 		}
 
-		[ConditionalAttribute("DEBUG")]
 		private static void printAnyKeyMessage()
 		{
 			ConsoleLogger.WriteLine("Press any Key to exit.");
