@@ -26,6 +26,8 @@ namespace BefunRep
 		private string safepath;
 		private string outpath;
 		private long maxoutputsize;
+		private long? outputminimum;
+		private long? outputmaximum;
 		private bool quiet;
 		private int iterations;
 		private string logpath;
@@ -64,6 +66,7 @@ namespace BefunRep
 			if (cmda.isEmpty() || cmda.IsSet("help"))
 			{
 				printHelp();
+				printAnyKeyMessage();
 				return;
 			}
 
@@ -94,7 +97,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Started.", DateTime.Now);
 
 			safe.start();
-			formatter.Output(safe, outpath, maxoutputsize);
+			formatter.Output(safe, outpath, maxoutputsize, outputminimum ?? long.MinValue, outputmaximum ?? long.MaxValue);
 			safe.stop();
 
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Finished.", DateTime.Now);
@@ -165,6 +168,8 @@ namespace BefunRep
 			ConsoleLogger.WriteLine("-stats=[0-3]");
 			ConsoleLogger.WriteLine("-log={directory of file}");
 			ConsoleLogger.WriteLine("-maxoutput=[-1 | 1-n]");
+			ConsoleLogger.WriteLine("-outmin=[int]");
+			ConsoleLogger.WriteLine("-outmax=[int]");
 			ConsoleLogger.WriteLine("-help");
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine("################################");
@@ -197,6 +202,8 @@ namespace BefunRep
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safepath      := {1}", DateTime.Now, safepath);
 
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputtype    := {1}", DateTime.Now, formatter.GetType().Name);
+
+			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputrange   := {1}", DateTime.Now, ((outputminimum ?? outputmaximum) == null) ? ("[ALL]") : ("[" + outputminimum + " - " + outputmaximum + "]"));
 
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputpath    := {1}", DateTime.Now, outpath);
 
@@ -268,6 +275,8 @@ namespace BefunRep
 			iterations = cmda.GetIntDefault("iterations", 1);
 			logpath = cmda.GetStringDefault("log", null);
 			maxoutputsize = cmda.GetLongDefault("maxoutput", -1);
+			outputminimum = cmda.GetLongDefaultNull("outmin");
+			outputmaximum = cmda.GetLongDefaultNull("outmax");
 			return cmda;
 		}
 

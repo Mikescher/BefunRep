@@ -12,10 +12,10 @@ namespace BefunRep.OutputHandling
 			//
 		}
 
-		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize)
+		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize, long omin, long omax)
 		{
-			long min = safe.getLowestValue();
-			long max = safe.getHighestValue();
+			long min = Math.Max(safe.getLowestValue(), omin);
+			long max = Math.Min(safe.getHighestValue(), omax);
 
 			if (maxOutputSize < 0 || (max - min) <= maxOutputSize)
 			{
@@ -25,7 +25,7 @@ namespace BefunRep.OutputHandling
 			}
 			else
 			{
-				string fp_start = Path.GetDirectoryName(filepath) + Path.GetFileNameWithoutExtension(filepath);
+				string fp_start = filepath.Substring(0, filepath.Length - Path.GetExtension(filepath).Length);
 				string fp_end = Path.GetExtension(filepath);
 
 				for (int i = 1; min < max; i++)

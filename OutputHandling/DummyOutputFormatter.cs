@@ -9,7 +9,7 @@ namespace BefunRep.OutputHandling
 		{
 			//
 		}
-		public override void Output(RepresentationSafe safe, string filepath, long maxOutputSize)
+		public override void Output(RepresentationSafe safe, string filepath, long maxOutputSize, long omin, long omax)
 		{
 			// Do nothing
 		}
