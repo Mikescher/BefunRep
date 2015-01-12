@@ -41,6 +41,10 @@ Number | Representation
 113573 | `"[' "**5+`
 113574 | `"E~(&"*+*`
 
+Online Collection
+=================
+
+I uploaded an collection of all representations from 0 to 2^24 to a **[githup repository](https://github.com/Mikescher/Befunge_Number_Representations)** - in case you need to look up a few numbers
 
 Download
 ========
