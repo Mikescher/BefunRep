@@ -18,5 +18,10 @@ namespace BefunRep.OutputHandling
 		{
 			// Do nothing
 		}
+
+		public override string Convert(RepresentationSafe safe, long min, long max)
+		{
+			return string.Empty; // Do nothing
+		}
 	}
 }

@@ -62,6 +62,7 @@
     <Compile Include="CustomExtensions.cs" />
     <Compile Include="Exceptions\WTFException.cs" />
     <Compile Include="FileHandling\BinarySafe.cs" />
+    <Compile Include="FileHandling\MemorySafe.cs" />
     <Compile Include="FileHandling\CSVSafe.cs" />
     <Compile Include="FileHandling\JSONSafe.cs" />
     <Compile Include="Log\ConsoleLogger.cs" />

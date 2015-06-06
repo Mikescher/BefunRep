@@ -29,5 +29,23 @@ namespace BefunRep.OutputHandling
 
 			File.WriteAllText(filepath, JsonConvert.SerializeObject(data, Formatting.Indented));
 		}
+
+		public override string Convert(RepresentationSafe safe, long min, long max)
+		{
+			var data = CustomExtensions
+				.LongRange(min, max)
+				.Where(p => safe.get(p) != null)
+				.Where(p => safe.getAlgorithm(p) != null)
+				.Select(p => new
+				{
+					value = p,
+					representation = safe.get(p),
+					algorithmID = safe.getAlgorithm(p),
+					algorithm = RepCalculator.algorithmNames[safe.getAlgorithm(p).Value]
+				});
+
+
+			return JsonConvert.SerializeObject(data, Formatting.Indented);
+		}
 	}
 }

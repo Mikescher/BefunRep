@@ -40,5 +40,7 @@ namespace BefunRep.OutputHandling
 		}
 
 		public abstract void Output(RepresentationSafe safe, string filepath, long min, long max);
+
+		public abstract string Convert(RepresentationSafe safe, long min, long max);
 	}
 }
