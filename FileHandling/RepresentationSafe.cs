@@ -34,6 +34,7 @@ namespace BefunRep.FileHandling
 
 		public abstract void start();
 		public abstract void stop();
+		public abstract void LightLoad();
 
 		public abstract long getLowestValue();
 		public abstract long getHighestValue();

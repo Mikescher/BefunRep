@@ -34,6 +34,8 @@ namespace BefunRep.FileHandling
 		private long valueStart;
 		private long valueEnd;
 
+		public bool Changed { get; private set; }
+
 		public BinarySafe(string path, long min, long max)
 		{
 			this.filepath = path;
@@ -114,6 +116,8 @@ namespace BefunRep.FileHandling
 			write[codeLength - 1] = algorithm;
 
 			fstream.Write(write, 0, codeLength);
+
+			Changed = true;
 		}
 
 		public override void start()
@@ -146,6 +150,8 @@ namespace BefunRep.FileHandling
 
 				writeHeader();
 			}
+
+			Changed = false;
 		}
 
 		public override void stop()
@@ -163,6 +169,8 @@ namespace BefunRep.FileHandling
 			fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * codeLength);
 
 			writeHeader();
+
+			Changed = true;
 		}
 
 		private void updateStartSize(long key, int buffer = 1240) // 10 kB Buffer
@@ -176,6 +184,8 @@ namespace BefunRep.FileHandling
 			valueStart = new_valueStart;
 
 			writeHeader();
+
+			Changed = true;
 		}
 
 		private void updateCodeLength(int len)
@@ -206,6 +216,8 @@ namespace BefunRep.FileHandling
 			codeLength = new_codeLength;
 
 			writeHeader();
+
+			Changed = true;
 		}
 
 		private void writeHeader()
@@ -219,6 +231,8 @@ namespace BefunRep.FileHandling
 
 			fstream.Seek(0, SeekOrigin.Begin);
 			fstream.Write(arr, 0, 4 + 8 + 8);
+
+			Changed = true;
 		}
 
 		private void moveRight(long count, long offset)
@@ -239,6 +253,31 @@ namespace BefunRep.FileHandling
 				fstream.Seek(HEADER_SIZE + (i + offset) * codeLength, SeekOrigin.Begin);
 				fstream.Write(arr, 0, codeLength);
 			}
+
+			Changed = true;
+		}
+
+		public override void LightLoad()
+		{
+			if (File.Exists(filepath))
+			{
+				using (fstream = new FileStream(filepath, FileMode.Open))
+				{
+					LightLoad(fstream, out codeLength, out valueStart, out valueEnd);
+				}
+			}
+		}
+
+		public static void LightLoad(Stream stream, out int length, out long start, out long end)
+		{
+			if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
+
+			byte[] arr = new byte[HEADER_SIZE];
+			stream.Read(arr, 0, HEADER_SIZE);
+
+			length = BitConverter.ToInt32(arr, 0);
+			start = BitConverter.ToInt64(arr, 4);
+			end = BitConverter.ToInt64(arr, 12);
 		}
 
 		public override long getLowestValue()

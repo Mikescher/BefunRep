@@ -56,22 +56,22 @@ namespace BefunRep
 				Console.Error.WriteLine(e.ToString());
 			}
 
-			printHeader();
+			PrintHeader();
 
 			//##############
 
-			CommandLineArguments cmda = loadCMDA(args);
-			interpreteCMDA(cmda);
+			CommandLineArguments cmda = LoadCMDA(args);
+			InterpreteCMDA(cmda);
 
 			if (cmda.isEmpty() || cmda.IsSet("help"))
 			{
-				printHelp();
-				printAnyKeyMessage();
+				PrintHelp();
+				PrintAnyKeyMessage();
 				return;
 			}
 
 			RepCalculator r = new RepCalculator(lowerBoundary, upperBoundary, testResults, safe, quiet);
-			outputCMDA();
+			OutputCMDA();
 
 			//##############
 
@@ -96,17 +96,26 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Started.", DateTime.Now);
 
-			safe.start();
-			formatter.Output(safe, outpath, maxoutputsize, outputminimum ?? long.MinValue, outputmaximum ?? long.MaxValue);
-			safe.stop();
+			if (outpath != null || statsLevel > 0)
+			{
+				safe.start();
+				{
+					if (outpath != null)
+					{
+						formatter.Output(safe, outpath, maxoutputsize, outputminimum ?? long.MinValue, outputmaximum ?? long.MaxValue);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Finished.", DateTime.Now);
+						ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Finished.", DateTime.Now);
+					}
 
-			//##############
+					if (statsLevel > 0)
+					{
+						ConsoleLogger.WriteLine();
 
-			ConsoleLogger.WriteLine();
-
-			printStats(safe);
+						PrintStats(safe);
+					}
+				}
+				safe.stop();
+			}
 
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine();
@@ -114,10 +123,10 @@ namespace BefunRep
 			ConsoleLogger.save(); // ############# ENDE #############
 
 			if (logpath == null)
-				printAnyKeyMessage();
+				PrintAnyKeyMessage();
 		}
 
-		private static void printAnyKeyMessage()
+		private static void PrintAnyKeyMessage()
 		{
 			ConsoleLogger.WriteLine("Press any Key to exit.");
 
@@ -127,7 +136,7 @@ namespace BefunRep
 			Console.ReadLine();
 		}
 
-		private static void printHeader()
+		private static void PrintHeader()
 		{
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine();
@@ -150,7 +159,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 		}
 
-		private void printHelp()
+		private void PrintHelp()
 		{
 			ConsoleLogger.WriteLine("Possible Commandline Arguments:");
 			ConsoleLogger.WriteLine();
@@ -162,7 +171,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine("-quiet");
 			ConsoleLogger.WriteLine("-reset");
 			ConsoleLogger.WriteLine("-algorithm=[0 - " + (RepCalculator.algorithms.Length - 1) + "]");
-			ConsoleLogger.WriteLine("-safe=[filename].[csv|json|bin|dat]");
+			ConsoleLogger.WriteLine("-safe=[filename].[csv|json|bin|bin.gz]");
 			ConsoleLogger.WriteLine("-out=[filename].[csv|json|xml]");
 			ConsoleLogger.WriteLine("-iterations=[-1 | 0-n ]");
 			ConsoleLogger.WriteLine("-stats=[0-3]");
@@ -178,7 +187,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 		}
 
-		private void outputCMDA()
+		private void OutputCMDA()
 		{
 			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Limits        := [{1}, {2}]{3}", DateTime.Now,
 				lowerBoundary,
@@ -214,7 +223,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 		}
 
-		private void interpreteCMDA(CommandLineArguments cmda)
+		private void InterpreteCMDA(CommandLineArguments cmda)
 		{
 			if (doReset)
 				File.Delete(safepath); // reset;
@@ -223,14 +232,15 @@ namespace BefunRep
 				safe = new CSVSafe(safepath);
 			else if (safepath.ToLower().EndsWith(".json"))
 				safe = new JSONSafe(safepath);
+			else if (safepath.ToLower().EndsWith(".bin.gz") || safepath.ToLower().EndsWith(".dat.gz"))
+				safe = new GZipBinarySafe(safepath, lowerBoundary, upperBoundary);
 			else if (safepath.ToLower().EndsWith(".bin") || safepath.ToLower().EndsWith(".dat"))
 				safe = new BinarySafe(safepath, lowerBoundary, upperBoundary);
 			else
 				safe = new CSVSafe(safepath);
 
 			// Init values
-			safe.start();
-			safe.stop();
+			safe.LightLoad();
 
 			if (!(cmda.IsSet("lower") || cmda.IsSet("upper")))
 			{
@@ -259,7 +269,7 @@ namespace BefunRep
 			ConsoleLogger.setPath(logpath);
 		}
 
-		private CommandLineArguments loadCMDA(string[] args)
+		private CommandLineArguments LoadCMDA(string[] args)
 		{
 			CommandLineArguments cmda = new CommandLineArguments(args);
 
@@ -280,10 +290,8 @@ namespace BefunRep
 			return cmda;
 		}
 
-		private void printStats(RepresentationSafe safe)
+		private void PrintStats(RepresentationSafe safe)
 		{
-			safe.start();
-
 			if (statsLevel >= 1) //############################################
 			{
 				SafeInfo info = safe.getInformations();
@@ -354,8 +362,6 @@ namespace BefunRep
 					}
 				}
 			}
-
-			safe.stop();
 		}
 
 		public static string FormatTimespan(TimeSpan ts)

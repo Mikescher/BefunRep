@@ -56,6 +56,11 @@ namespace BefunRep.FileHandling
 			safe();
 		}
 
+		public override void LightLoad()
+		{
+			// NOP
+		}
+
 		public override long getLowestValue()
 		{
 			return (representations.Count == 0) ? 0 : representations.Keys.Min();
