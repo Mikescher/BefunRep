@@ -26,11 +26,23 @@ namespace BefunRep.FileHandling
 		public int[] MaxLenPerAlgorithm;
 	}
 
+	public class BefungeRepresentation
+	{
+		public readonly byte Algorithm;
+		public readonly string Representation;
+
+		public int Length => Representation.Length;
+
+		public BefungeRepresentation(byte a, string r) { Algorithm = a; Representation = r; }
+
+		public override string ToString() { return Representation; }
+	}
+
 	public abstract class RepresentationSafe
 	{
 		public abstract string GetRep(long key);
 		public abstract byte? GetAlgorithm(long key);
-		public abstract Tuple<byte,string> GetCombined(long key);
+		public abstract BefungeRepresentation GetCombined(long key);
 		public abstract void Put(long key, string representation, byte algorithm);
 
 		public abstract void Start();
@@ -46,16 +58,16 @@ namespace BefunRep.FileHandling
 			long high = GetHighestValue();
 
 			long nonNullCount = 0;
-			long[] nonNullPerAlgorithm = Enumerable.Repeat(0L, RepCalculator.algorithms.Length).ToArray();
+			long[] nonNullPerAlgorithm = Enumerable.Repeat(0L, RepCalculator.Algorithms.Length).ToArray();
 
 			long totalLen = 0;
-			long[] totalLenPerAlgorithm = Enumerable.Repeat(0L, RepCalculator.algorithms.Length).ToArray();
+			long[] totalLenPerAlgorithm = Enumerable.Repeat(0L, RepCalculator.Algorithms.Length).ToArray();
 
 			int minLen = int.MaxValue;
-			int[] minLenPerAlgorithm = Enumerable.Repeat(int.MaxValue, RepCalculator.algorithms.Length).ToArray();
+			int[] minLenPerAlgorithm = Enumerable.Repeat(int.MaxValue, RepCalculator.Algorithms.Length).ToArray();
 
 			int maxLen = int.MinValue;
-			int[] maxLenPerAlgorithm = Enumerable.Repeat(int.MinValue, RepCalculator.algorithms.Length).ToArray();
+			int[] maxLenPerAlgorithm = Enumerable.Repeat(int.MinValue, RepCalculator.Algorithms.Length).ToArray();
 
 			for (long i = low; i < high; i++)
 			{
@@ -92,7 +104,7 @@ namespace BefunRep.FileHandling
 			}
 
 			double avgLen;
-			double[] avgLenPerAlgorithm = new double[RepCalculator.algorithms.Length];
+			double[] avgLenPerAlgorithm = new double[RepCalculator.Algorithms.Length];
 
 			for (int i = 0; i < totalLenPerAlgorithm.Length; i++)
 			{

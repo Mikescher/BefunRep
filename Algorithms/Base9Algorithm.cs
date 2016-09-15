@@ -1,4 +1,4 @@
-﻿using System;
+﻿using BefunRep.Helper;
 using System.Text;
 
 namespace BefunRep.Algorithms
@@ -16,23 +16,21 @@ namespace BefunRep.Algorithms
 
 		protected override string Get(long value)
 		{
-			StringBuilder p = new StringBuilder();
-
 			if (value < 0)
 			{
-				return "0" + getPositive(-value) + "-";
+				return "0" + GetPositive(-value) + "-";
 			}
 			else
 			{
-				return getPositive(value);
+				return GetPositive(value);
 			}
 		}
 
-		private string getPositive(long value)
+		private string GetPositive(long value)
 		{
 			StringBuilder p = new StringBuilder();
 
-			string rep = ConvertToBase(value, 9);
+			string rep = BefungeHelper.ConvertToBase(value, 9);
 
 			for (int i = 0; i < rep.Length; i++)
 			{
@@ -51,37 +49,6 @@ namespace BefunRep.Algorithms
 			}
 
 			return p.ToString();
-		}
-
-		private string ConvertToBase(long decimalNumber, int radix)
-		{
-			const int BitsInLong = 64;
-			const string Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-			if (radix < 2 || radix > Digits.Length)
-				throw new ArgumentException("The radix must be >= 2 and <= " + Digits.Length.ToString());
-
-			if (decimalNumber == 0)
-				return "0";
-
-			int index = BitsInLong - 1;
-			long currentNumber = Math.Abs(decimalNumber);
-			char[] charArray = new char[BitsInLong];
-
-			while (currentNumber != 0)
-			{
-				int remainder = (int)(currentNumber % radix);
-				charArray[index--] = Digits[remainder];
-				currentNumber = currentNumber / radix;
-			}
-
-			string result = new String(charArray, index + 1, BitsInLong - index - 1);
-			if (decimalNumber < 0)
-			{
-				result = "-" + result;
-			}
-
-			return result;
 		}
 	}
 }

@@ -14,12 +14,12 @@ namespace BefunRep.FileHandling
 
 		public JSONSafe(string path)
 		{
-			this.filepath = path;
+			filepath = path;
 
-			load();
+			Load();
 		}
 
-		private void load()
+		private void Load()
 		{
 			if (!File.Exists(filepath))
 			{
@@ -30,13 +30,10 @@ namespace BefunRep.FileHandling
 
 			string file = File.ReadAllText(filepath);
 
-			representations = JsonConvert.DeserializeObject<SortedDictionary<long, Tuple<byte, string>>>(file);
-
-			if (representations == null)
-				representations = new SortedDictionary<long, Tuple<byte, string>>();
+			representations = JsonConvert.DeserializeObject<SortedDictionary<long, Tuple<byte, string>>>(file) ?? new SortedDictionary<long, Tuple<byte, string>>();
 		}
 
-		private void safe()
+		private void Save()
 		{
 			string txt = JsonConvert.SerializeObject(representations, Formatting.Indented);
 
@@ -59,10 +56,10 @@ namespace BefunRep.FileHandling
 				return null;
 		}
 
-		public override Tuple<byte, string> GetCombined(long key)
+		public override BefungeRepresentation GetCombined(long key)
 		{
 			if (representations.ContainsKey(key))
-				return representations[key];
+				return new BefungeRepresentation(representations[key].Item1, representations[key].Item2);
 			else
 				return null;
 		}
@@ -71,7 +68,7 @@ namespace BefunRep.FileHandling
 		{
 			representations[key] = Tuple.Create(algorithm, representation);
 
-			safe();
+			Save();
 		}
 
 		public override void Start()
@@ -81,7 +78,7 @@ namespace BefunRep.FileHandling
 
 		public override void Stop()
 		{
-			safe();
+			Save();
 		}
 
 		public override void LightLoad()

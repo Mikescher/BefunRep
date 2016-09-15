@@ -9,7 +9,7 @@ namespace BefunRep.Algorithms
 
 		protected RepAlgorithm(byte id)
 		{
-			this.AlgorithmID = id;
+			AlgorithmID = id;
 		}
 
 		public string Calculate(long value)
@@ -30,20 +30,20 @@ namespace BefunRep.Algorithms
 				Representations.Put(value, result, AlgorithmID);
 				return result;
 			}
-			else if (result == old.Item2)
+			else if (result == old.Representation)
 			{
 				// already in safe
 
 				return null;
 			}
-			else if (AlgorithmID != RepCalculator.ALGO_ID_STRINGIFY && old.Item2.Length == result.Length && old.Item1 == RepCalculator.ALGO_ID_STRINGIFY)
+			else if (!result.Contains("\"") && old.Length == result.Length && old.Representation.Contains("\""))
 			{
 				// non-stringmode is preffered
 
 				Representations.Put(value, result, AlgorithmID);
 				return result;
 			}
-			else if (old.Item2.Length <= result.Length)
+			else if (old.Length <= result.Length)
 			{
 				// safe value is better
 

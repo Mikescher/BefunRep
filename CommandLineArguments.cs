@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -8,94 +7,89 @@ namespace BefunRep
 {
 	public class CommandLineArguments
 	{
-		private StringDictionary Parameters;
+		private readonly Dictionary<string, string> paramDict;
 
-		public CommandLineArguments(string[] Args)
+		public CommandLineArguments(string[] args, bool caseSensitive = true)
 		{
-			Parameters = new StringDictionary();
-			Regex Spliter = new Regex(@"^-{1,2}|^/|=|:",
-				RegexOptions.IgnoreCase | RegexOptions.Compiled);
+			if (caseSensitive)
+				paramDict = new Dictionary<string, string>(StringComparer.CurrentCulture);
+			else
+				paramDict = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
-			Regex Remover = new Regex(@"^['""]?(.*?)['""]?$",
-				RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-			string Parameter = null;
-			string[] Parts;
+			var rexSplitter = new Regex(@"^-{1,2}|^/|=|:", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+			var rexRemover = new Regex(@"^['""]?(.*?)['""]?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-			foreach (string Txt in Args)
+			string parameter = null;
+
+			foreach (string txt in args)
 			{
-				Parts = Spliter.Split(Txt, 3);
+				var parts = rexSplitter.Split(txt, 3);
 
-				switch (Parts.Length)
+				switch (parts.Length)
 				{
 					case 1:
-						if (Parameter != null)
+						if (parameter != null)
 						{
-							if (!Parameters.ContainsKey(Parameter))
+							if (!paramDict.ContainsKey(parameter))
 							{
-								Parts[0] = Remover.Replace(Parts[0], "$1");
-								Parameters.Add(Parameter, Parts[0]);
+								parts[0] = rexRemover.Replace(parts[0], "$1");
+								paramDict.Add(parameter, parts[0]);
 							}
-							Parameter = null;
+							parameter = null;
 						}
 						break;
 
 					case 2:
-						if (Parameter != null)
+						if (parameter != null)
 						{
-							if (!Parameters.ContainsKey(Parameter))
-								Parameters.Add(Parameter, "true");
+							if (!paramDict.ContainsKey(parameter))
+								paramDict.Add(parameter, "true");
 						}
-						Parameter = Parts[1];
+						parameter = parts[1];
 						break;
 
 					case 3:
-						if (Parameter != null)
+						if (parameter != null)
 						{
-							if (!Parameters.ContainsKey(Parameter))
-								Parameters.Add(Parameter, "true");
+							if (!paramDict.ContainsKey(parameter))
+								paramDict.Add(parameter, "true");
 						}
 
-						Parameter = Parts[1];
+						parameter = parts[1];
 
-						if (!Parameters.ContainsKey(Parameter))
+						if (!paramDict.ContainsKey(parameter))
 						{
-							Parts[2] = Remover.Replace(Parts[2], "$1");
-							Parameters.Add(Parameter, Parts[2]);
+							parts[2] = rexRemover.Replace(parts[2], "$1");
+							paramDict.Add(parameter, parts[2]);
 						}
 
-						Parameter = null;
+						parameter = null;
 						break;
 				}
 			}
-			if (Parameter != null)
+			if (parameter != null)
 			{
-				if (!Parameters.ContainsKey(Parameter))
-					Parameters.Add(Parameter, "true");
+				if (!paramDict.ContainsKey(parameter))
+					paramDict.Add(parameter, "true");
 			}
 		}
 
 		public bool Contains(string key)
 		{
-			return Parameters.ContainsKey(key);
+			return paramDict.ContainsKey(key);
 		}
 
 		public bool IsSet(string key)
 		{
-			return Parameters.ContainsKey(key) && Parameters[key] != null;
+			return paramDict.ContainsKey(key) && paramDict[key] != null;
 		}
 
-		public string this[string Param]
-		{
-			get
-			{
-				return (Parameters[Param]);
-			}
-		}
+		public string this[string param] => (paramDict[param]);
 
-		public bool isEmpty()
+		public bool IsEmpty()
 		{
-			return Parameters.Count == 0;
+			return paramDict.Count == 0;
 		}
 
 		#region String
@@ -105,10 +99,10 @@ namespace BefunRep
 			return Contains(p) ? this[p] : def;
 		}
 
-		public List<String> GetStringList(string p, string delimiter, StringSplitOptions options = StringSplitOptions.None)
+		public List<string> GetStringList(string p, string delimiter, StringSplitOptions options = StringSplitOptions.None)
 		{
 			if (Contains(p))
-				return this[p].Split(new string[] { delimiter }, options).ToList();
+				return this[p].Split(new[] { delimiter }, options).ToList();
 			else
 				return null;
 		}
@@ -120,7 +114,7 @@ namespace BefunRep
 		public bool IsLong(string p)
 		{
 			long a;
-			return IsSet(p) && long.TryParse(Parameters[p], out a);
+			return IsSet(p) && long.TryParse(paramDict[p], out a);
 		}
 
 		public long GetLong(string p)
@@ -161,7 +155,7 @@ namespace BefunRep
 		public bool IsInt(string p)
 		{
 			int a;
-			return IsSet(p) && int.TryParse(Parameters[p], out a);
+			return IsSet(p) && int.TryParse(paramDict[p], out a);
 		}
 
 		public int GetInt(string p)
@@ -202,7 +196,7 @@ namespace BefunRep
 		public bool IsUInt(string p)
 		{
 			uint a;
-			return IsSet(p) && uint.TryParse(Parameters[p], out a);
+			return IsSet(p) && uint.TryParse(paramDict[p], out a);
 		}
 
 		public uint GetUInt(string p)
@@ -234,6 +228,146 @@ namespace BefunRep
 				return null;
 
 			return ls.Select(uint.Parse).ToList();
+		}
+
+		#endregion
+
+		#region Enum
+
+		private bool TryParseEnum<T>(string input, out T value) where T : struct, IConvertible
+		{
+			T result;
+			if (Enum.TryParse(input, true, out result))
+			{
+				value = result;
+				return true;
+			}
+
+			int resultOrd;
+			if (int.TryParse(input, out resultOrd))
+			{
+				value = (T)Enum.ToObject(typeof(T), resultOrd);
+				return true;
+			}
+
+			value = default(T);
+			return false;
+		}
+
+		private T ParseEnum<T>(string p) where T : struct, IConvertible
+		{
+			T value;
+			if (TryParseEnum(p, out value))
+				return value;
+
+			throw new FormatException(string.Format("The value {0} is not a valid enum member", p));
+		}
+
+		public bool IsEnum<T>(string p) where T : struct, IConvertible
+		{
+			if (!IsSet(p)) return false;
+
+			T tmp;
+			return TryParseEnum(p, out tmp);
+		}
+
+		public T GetEnum<T>(string p) where T : struct, IConvertible
+		{
+			T value;
+			if (TryParseEnum(p, out value))
+				return value;
+
+			throw new FormatException(string.Format("The parameter {0} is not a valid enum value", p));
+		}
+
+		public T GetEnumDefault<T>(string p, T def) where T : struct, IConvertible
+		{
+			T value;
+			if (TryParseEnum(p, out value))
+				return value;
+			else
+				return def;
+		}
+
+		public List<T> GetEnumList<T>(string p, string delimiter, bool sanitize = false) where T : struct, IConvertible
+		{
+			var ls = GetStringList(p, delimiter, sanitize ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+
+			T aout;
+			if (ls.Any(pp => !TryParseEnum(pp, out aout)))
+				return null;
+
+			return ls.Select(ParseEnum<T>).ToList();
+		}
+
+		#endregion
+
+		#region Bool
+
+		private bool TryParseBool(string input, bool allowOrdinal, out bool value)
+		{
+			if (input.ToLower() == "true")
+			{
+				value = true;
+				return true;
+			}
+
+			if (input.ToLower() == "false")
+			{
+				value = true;
+				return true;
+			}
+
+			int resultOrd;
+			if (allowOrdinal && int.TryParse(input, out resultOrd))
+			{
+				value = (resultOrd != 0);
+				return true;
+			}
+
+			value = default(bool);
+			return false;
+		}
+
+		private bool ParseBool(string p, bool allowOrdinal = false)
+		{
+			bool value;
+			if (TryParseBool(p, allowOrdinal, out value))
+				return value;
+
+			throw new FormatException(string.Format("The value {0} is not a valid boolean value", p));
+		}
+
+		public bool IsBool(string p, bool allowOrdinal = false)
+		{
+			bool a;
+			return IsSet(p) && TryParseBool(paramDict[p], allowOrdinal, out a);
+		}
+
+		public bool GetBool(string p, bool allowOrdinal = false)
+		{
+			return ParseBool(this[p], allowOrdinal);
+		}
+
+		public bool GetBoolDefault(string p, bool def, bool allowOrdinal = false)
+		{
+			return IsBool(p, allowOrdinal) ? GetBool(p, allowOrdinal) : def;
+		}
+
+		public bool? GetBoolDefaultNull(string p, bool allowOrdinal = false)
+		{
+			return IsBool(p, allowOrdinal) ? GetBool(p, allowOrdinal) : (bool?)null;
+		}
+
+		public List<bool> GetBoolList(string p, string delimiter, bool allowOrdinal = false, bool sanitize = false)
+		{
+			var ls = GetStringList(p, delimiter, sanitize ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+
+			bool aout;
+			if (ls.Any(pp => !TryParseBool(pp, allowOrdinal, out aout)))
+				return null;
+
+			return ls.Select(e => ParseBool(e, allowOrdinal)).ToList();
 		}
 
 		#endregion

@@ -63,7 +63,7 @@ namespace BefunRep
 			CommandLineArguments cmda = LoadCMDA(args);
 			InterpreteCMDA(cmda);
 
-			if (cmda.isEmpty() || cmda.IsSet("help"))
+			if (cmda.IsEmpty() || cmda.IsSet("help"))
 			{
 				PrintHelp();
 				PrintAnyKeyMessage();
@@ -79,9 +79,9 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine();
 
-			for (int i = 0; i < iterations || iterations < 0; i++) // iterations neg => run until no changes
+			for (int i = 0; i < iterations || iterations < 0; i++) // iterations neg => Run until no changes
 			{
-				int foundcount = r.calculate(algorithm);
+				int foundcount = r.Calculate(algorithm);
 				founds.Add(foundcount);
 
 				ConsoleLogger.WriteLine();
@@ -170,7 +170,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine("-notest");
 			ConsoleLogger.WriteLine("-quiet");
 			ConsoleLogger.WriteLine("-reset");
-			ConsoleLogger.WriteLine("-algorithm=[0 - " + (RepCalculator.algorithms.Length - 1) + "]");
+			ConsoleLogger.WriteLine("-algorithm=[0 - " + (RepCalculator.Algorithms.Length - 1) + "]");
 			ConsoleLogger.WriteLine("-safe=[filename].[csv|json|bin|bin.gz]");
 			ConsoleLogger.WriteLine("-out=[filename].[csv|tsv|json|xml]");
 			ConsoleLogger.WriteLine("-iterations=[-1 | 0-n ]");
@@ -204,7 +204,7 @@ namespace BefunRep
 
 			ConsoleLogger.WriteTimedLine("Statistics    := {0}", new[] { "none", "simple", "verbose", "all" }[statsLevel]);
 
-			ConsoleLogger.WriteTimedLine("Algorithm     := {0}", algorithm == -1 ? "all" : RepCalculator.algorithmNames[algorithm]);
+			ConsoleLogger.WriteTimedLine("Algorithm     := {0}", algorithm == -1 ? "all" : RepCalculator.AlgorithmNames[algorithm]);
 
 			ConsoleLogger.WriteTimedLine("Safetype      := {0}", safe.GetType().Name);
 
@@ -281,7 +281,7 @@ namespace BefunRep
 			doReset = cmda.IsSet("reset");
 			quiet = cmda.IsSet("q") || cmda.IsSet("quiet");
 			statsLevel = cmda.GetIntDefaultRange("stats", 1, 0, 4);
-			algorithm = cmda.GetIntDefaultRange("algorithm", -1, -1, RepCalculator.algorithms.Length);
+			algorithm = cmda.GetIntDefaultRange("algorithm", -1, -1, RepCalculator.Algorithms.Length);
 			safepath = cmda.GetStringDefault("safe", "out.csv");
 			outpath = cmda.GetStringDefault("out", null);
 			iterations = cmda.GetIntDefault("iterations", 1);
@@ -310,28 +310,28 @@ namespace BefunRep
 				ConsoleLogger.WriteLine();
 
 				ConsoleLogger.WriteLineFormatted("{0}/{1} Representations found", info.NonNullCount, info.Count);
-				ConsoleLogger.WriteLineFormatted("{0} Algorithms registered", RepCalculator.algorithms.Length);
+				ConsoleLogger.WriteLineFormatted("{0} Algorithms registered", RepCalculator.Algorithms.Length);
 				ConsoleLogger.WriteLineFormatted("Run Duration = {0:hh} hours {0:mm} minutes {0:ss} seconds {0:ff} milliseconds", startTime - DateTime.Now);
 
 				ConsoleLogger.WriteLine();
 
-				for (int i = 0; i < RepCalculator.algorithmTime.Length; i++)
+				for (int i = 0; i < RepCalculator.AlgorithmTimes.Length; i++)
 				{
 					ConsoleLogger.WriteLineFormatted("Time per algorithm {0, 24}: {1,6} ms (= {2,-20} )",
-						RepCalculator.algorithmNames[i],
-						RepCalculator.algorithmTime[i],
-						FormatMilliseconds(RepCalculator.algorithmTime[i]));
+						RepCalculator.AlgorithmNames[i],
+						RepCalculator.AlgorithmTimes[i],
+						FormatMilliseconds(RepCalculator.AlgorithmTimes[i]));
 				}
 
 				ConsoleLogger.WriteLine();
 
 				if (statsLevel >= 2) //########################################
 				{
-					for (int i = 0; i < RepCalculator.algorithms.Length; i++)
+					for (int i = 0; i < RepCalculator.Algorithms.Length; i++)
 					{
 						ConsoleLogger.WriteLineFormatted("{0,6} Representations with algorithm {1,16} ({2:0.##}%)",
 							info.NonNullPerAlgorithm[i],
-							RepCalculator.algorithmNames[i],
+							RepCalculator.AlgorithmNames[i],
 							info.NonNullPerAlgorithm[i] * 100d / info.Count);
 					}
 
@@ -341,10 +341,10 @@ namespace BefunRep
 					{
 						ConsoleLogger.WriteLineFormatted("Average representation width = {0:0.###}", info.AvgLen);
 
-						for (int i = 0; i < RepCalculator.algorithms.Length; i++)
+						for (int i = 0; i < RepCalculator.Algorithms.Length; i++)
 						{
 							ConsoleLogger.WriteLineFormatted("Average representation width with algorithm {0,16}  = {1:0.###}",
-								RepCalculator.algorithmNames[i],
+								RepCalculator.AlgorithmNames[i],
 								info.AvgLenPerAlgorithm[i]);
 						}
 
@@ -352,10 +352,10 @@ namespace BefunRep
 
 						ConsoleLogger.WriteLineFormatted("Representation length (min|max) = [{0,3},{1,3}]", info.MinLen, info.MaxLen);
 
-						for (int i = 0; i < RepCalculator.algorithms.Length; i++)
+						for (int i = 0; i < RepCalculator.Algorithms.Length; i++)
 						{
 							ConsoleLogger.WriteLineFormatted("Representation length (min|max) for {0,16} = [{1,3},{2,3}]",
-								RepCalculator.algorithmNames[i],
+								RepCalculator.AlgorithmNames[i],
 								info.MinLenPerAlgorithm[i],
 								info.MaxLenPerAlgorithm[i]);
 						}

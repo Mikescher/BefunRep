@@ -8,12 +8,6 @@ namespace BefunRep.OutputHandling
 {
 	public class XMLOutputFormatter : OutputFormatter
 	{
-		public XMLOutputFormatter()
-			: base()
-		{
-			//
-		}
-
 		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{
 			using (StreamWriter writer = new StreamWriter(filepath))
@@ -22,17 +16,16 @@ namespace BefunRep.OutputHandling
 
 				for (long v = min; v < max; v++)
 				{
-					string rep = safe.GetRep(v);
-					byte? algo = safe.GetAlgorithm(v);
+					var rep = safe.GetCombined(v);
 
-					if (rep == null || algo == null)
+					if (rep == null)
 						continue;
 
-					writer.WriteLine(String.Format("  <value v=\"{0}\" aID=\"{1}\" algorithm=\"{2}\">{3}</value>",
+					writer.WriteLine("  <value v=\"{0}\" aID=\"{1}\" algorithm=\"{2}\">{3}</value>",
 						v,
-						algo,
-						RepCalculator.algorithmNames[algo.Value],
-						SecurityElement.Escape(rep)));
+						rep.Algorithm,
+						RepCalculator.AlgorithmNames[rep.Algorithm],
+						SecurityElement.Escape(rep.Representation));
 				}
 
 				writer.WriteLine("</data>");
@@ -47,17 +40,16 @@ namespace BefunRep.OutputHandling
 
 			for (long v = min; v < max; v++)
 			{
-				string rep = safe.GetRep(v);
-				byte? algo = safe.GetAlgorithm(v);
+				var rep = safe.GetCombined(v);
 
-				if (rep == null || algo == null)
+				if (rep == null)
 					continue;
 
 				writer.AppendLine(String.Format("  <value v=\"{0}\" aID=\"{1}\" algorithm=\"{2}\">{3}</value>",
-					v,
-					algo,
-					RepCalculator.algorithmNames[algo.Value],
-					SecurityElement.Escape(rep)));
+						v,
+						rep.Algorithm,
+						RepCalculator.AlgorithmNames[rep.Algorithm],
+						SecurityElement.Escape(rep.Representation)));
 			}
 
 			writer.AppendLine("</data>");

@@ -1,52 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BefunRep.Test
 {
 	public class CPTester
 	{
-		private static Random Rand = new Random();
+		public readonly Stack<long> Stack;
 
-		public int w;
-
-		public char[] raster;
-		public int PC = 0;
-		public bool Stringmode = false;
-
-		public Stack<long> Stack;
-
-		public bool finished = false;
+		private readonly int width;
+		private readonly char[] raster;
+		private int pc = 0;
+		private bool stringmode = false;
+		
+		private bool finished = false;
 
 		public CPTester(string s)
 		{
-			w = s.Length;
+			width = s.Length;
 
 			raster = s.ToCharArray();
 
 			Stack = new Stack<long>();
 		}
 
-		public void run()
+		public void Run()
 		{
 			while (!finished)
 			{
-				runSingle();
+				RunSingle();
 			}
 		}
 
-		private void runSingle()
+		private void RunSingle()
 		{
-			executCmd(raster[PC]);
+			ExecutCmd(raster[pc]);
 
-			move();
+			Move();
 		}
 
-		public void Push(long i)
+		private void Push(long i)
 		{
 			Stack.Push(i);
 		}
 
-		public long Pop()
+		private long Pop()
 		{
 			if (Stack.Count == 0)
 				throw new BFRunException("Popped an empty stack");
@@ -62,23 +58,23 @@ namespace BefunRep.Test
 			return Stack.Peek();
 		}
 
-		public bool Pop_b()
+		private bool Pop_b()
 		{
 			return Pop() != 0;
 		}
 
-		public void Push(bool b)
+		private void Push(bool b)
 		{
 			Push(b ? 1 : 0);
 		}
 
-		private void executCmd(long cmd)
+		private void ExecutCmd(long cmd)
 		{
-			if (Stringmode)
+			if (stringmode)
 			{
 				if (cmd == '"')
 				{
-					Stringmode = false;
+					stringmode = false;
 					return;
 				}
 				else
@@ -92,7 +88,6 @@ namespace BefunRep.Test
 			}
 
 			long t1;
-			long t2;
 
 			switch (cmd)
 			{
@@ -141,14 +136,14 @@ namespace BefunRep.Test
 				case '@':
 					throw new BFRunException("Illegal command: " + cmd);
 				case '"':
-					Stringmode = true;
+					stringmode = true;
 					break;
 				case ':':
 					Push(Peek());
 					break;
 				case '\\':
 					t1 = Pop();
-					t2 = Pop();
+					var t2 = Pop();
 					Push(t1);
 					Push(t2);
 					break;
@@ -156,7 +151,7 @@ namespace BefunRep.Test
 					Pop();
 					break;
 				case '#':
-					move();
+					Move();
 					break;
 				case '0':
 				case '1':
@@ -175,11 +170,11 @@ namespace BefunRep.Test
 			}
 		}
 
-		private void move()
+		private void Move()
 		{
-			PC++;
+			pc++;
 
-			if (PC >= w)
+			if (pc >= width)
 				finished = true;
 		}
 	}

@@ -15,11 +15,11 @@ namespace BefunRep.Algorithms
 
 		protected override string Get(long value)
 		{
-			if (value <= -(int)' ' && value >= -(int)'~' && value != -(int)'"')
+			if (value <= -' ' && value >= -'~' && value != -'"')
 			{
 				return null;
 			}
-			else if (value >= (int)' ' && value <= (int)'~' && value != (int)'"')
+			else if (value >= ' ' && value <= '~' && value != '"')
 			{
 				return "\"" + (char)(value) + "\"";
 			}

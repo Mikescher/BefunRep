@@ -21,10 +21,10 @@ namespace BefunRep.FileHandling
 	public class BinarySafe : RepresentationSafe
 	{
 		private const int INITIAL_CODE_LEN = 32; // Wird von Base9 erst bei über 43.046.720 gesprengt    (enthält das eine byte für den algo)
-		private readonly long INITIAL_VALUE_START;
-		private readonly long INITIAL_VALUE_END;
-
 		private const int HEADER_SIZE = 32;
+
+		private readonly long initialValueStart;
+		private readonly long initialValueEnd;
 
 		private readonly string filepath;
 		private FileStream fstream;
@@ -38,10 +38,10 @@ namespace BefunRep.FileHandling
 
 		public BinarySafe(string path, long min, long max)
 		{
-			this.filepath = path;
+			filepath = path;
 
-			this.INITIAL_VALUE_START = min;
-			this.INITIAL_VALUE_END = max;
+			initialValueStart = min;
+			initialValueEnd = max;
 		}
 
 		public override string GetRep(long key)
@@ -91,7 +91,7 @@ namespace BefunRep.FileHandling
 			return read[codeLength - 1];
 		}
 
-		public override Tuple<byte, string> GetCombined(long key)
+		public override BefungeRepresentation GetCombined(long key)
 		{
 			if (key < valueStart || key >= valueEnd)
 				return null;
@@ -115,19 +115,19 @@ namespace BefunRep.FileHandling
 				b.Append((char)read[i]);
 			}
 
-			return Tuple.Create(read[codeLength - 1], b.ToString());
+			return new BefungeRepresentation(read[codeLength - 1], b.ToString());
 		}
 
 		public override void Put(long key, string representation, byte algorithm)
 		{
 			if (key >= valueEnd)
-				updateEndSize(key);
+				UpdateEndSize(key);
 
 			if (key < valueStart)
-				updateStartSize(key);
+				UpdateStartSize(key);
 
 			if ((representation.Length + 1) > codeLength)
-				updateCodeLength(representation.Length + 1);
+				UpdateCodeLength(representation.Length + 1);
 
 			fstream.Seek(HEADER_SIZE + codeLength * (key - valueStart), SeekOrigin.Begin);
 
@@ -160,22 +160,22 @@ namespace BefunRep.FileHandling
 				valueStart = BitConverter.ToInt64(arr, 4);
 				valueEnd = BitConverter.ToInt64(arr, 12);
 
-				if (INITIAL_VALUE_END > valueEnd)
-					updateEndSize(INITIAL_VALUE_END, 0);
-				if (INITIAL_VALUE_START < valueStart)
-					updateStartSize(INITIAL_VALUE_START, 0);
+				if (initialValueEnd > valueEnd)
+					UpdateEndSize(initialValueEnd, 0);
+				if (initialValueStart < valueStart)
+					UpdateStartSize(initialValueStart, 0);
 			}
 			else
 			{
 				fstream = new FileStream(filepath, FileMode.CreateNew);
 
 				codeLength = INITIAL_CODE_LEN;
-				valueStart = INITIAL_VALUE_START;
-				valueEnd = INITIAL_VALUE_END;
+				valueStart = initialValueStart;
+				valueEnd = initialValueEnd;
 
 				fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * codeLength);
 
-				writeHeader();
+				WriteHeader();
 			}
 
 			Changed = false;
@@ -186,42 +186,42 @@ namespace BefunRep.FileHandling
 			fstream.Close();
 		}
 
-		private void updateEndSize(long key, int buffer = 32) // 32 values buffer
+		private void UpdateEndSize(long key, int buffer = 32) // 32 values buffer
 		{
-			long new_valueEnd = key + buffer;
+			long newValueEnd = key + buffer;
 
-			ConsoleLogger.WriteTimedLine("Update Safe Size Right (from {0} to {1})", valueEnd, new_valueEnd);
+			ConsoleLogger.WriteTimedLine("Update Safe Size Right (from {0} to {1})", valueEnd, newValueEnd);
 
-			valueEnd = new_valueEnd;
+			valueEnd = newValueEnd;
 			fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * codeLength);
 
-			writeHeader();
+			WriteHeader();
 
 			Changed = true;
 		}
 
-		private void updateStartSize(long key, int buffer = 1240) // 10 kB Buffer
+		private void UpdateStartSize(long key, int buffer = 1240) // 10 kB Buffer
 		{
-			long new_valueStart = key - buffer;
+			long newValueStart = key - buffer;
 
-			ConsoleLogger.WriteTimedLine("Update Safe Size Left (from {0} to {1})", valueStart, new_valueStart);
+			ConsoleLogger.WriteTimedLine("Update Safe Size Left (from {0} to {1})", valueStart, newValueStart);
 
-			fstream.SetLength(HEADER_SIZE + (valueEnd - new_valueStart) * codeLength);
-			moveRight(valueEnd - valueStart, valueStart - new_valueStart);
-			valueStart = new_valueStart;
+			fstream.SetLength(HEADER_SIZE + (valueEnd - newValueStart) * codeLength);
+			MoveRight(valueEnd - valueStart, valueStart - newValueStart);
+			valueStart = newValueStart;
 
-			writeHeader();
+			WriteHeader();
 
 			Changed = true;
 		}
 
-		private void updateCodeLength(int len)
+		private void UpdateCodeLength(int len)
 		{
-			int new_codeLength = Math.Max(codeLength + (len - codeLength) * 2, codeLength * 2);
+			int newCodeLength = Math.Max(codeLength + (len - codeLength) * 2, codeLength * 2);
 
-			ConsoleLogger.WriteTimedLine("Update Safe Code Length (from {0} to {1})", codeLength, new_codeLength);
+			ConsoleLogger.WriteTimedLine("Update Safe Code Length (from {0} to {1})", codeLength, newCodeLength);
 
-			fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * new_codeLength);
+			fstream.SetLength(HEADER_SIZE + (valueEnd - valueStart) * newCodeLength);
 
 			byte[] empty = new byte[codeLength];
 			empty.Fill<byte>(0);
@@ -236,18 +236,18 @@ namespace BefunRep.FileHandling
 				fstream.Seek(HEADER_SIZE + i * codeLength, SeekOrigin.Begin);
 				fstream.Write(empty, 0, codeLength);
 
-				fstream.Seek(HEADER_SIZE + i * new_codeLength, SeekOrigin.Begin);
+				fstream.Seek(HEADER_SIZE + i * newCodeLength, SeekOrigin.Begin);
 				fstream.Write(arr, 0, codeLength);
 			}
 
-			codeLength = new_codeLength;
+			codeLength = newCodeLength;
 
-			writeHeader();
+			WriteHeader();
 
 			Changed = true;
 		}
 
-		private void writeHeader()
+		private void WriteHeader()
 		{
 			byte[] arr = new byte[HEADER_SIZE];
 			arr.Fill<byte>(0);
@@ -262,7 +262,7 @@ namespace BefunRep.FileHandling
 			Changed = true;
 		}
 
-		private void moveRight(long count, long offset)
+		private void MoveRight(long count, long offset)
 		{
 			byte[] empty = new byte[codeLength];
 			empty.Fill<byte>(0);

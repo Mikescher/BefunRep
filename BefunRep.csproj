@@ -35,8 +35,8 @@
     <ApplicationIcon>icon_BefunRep.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.1.4.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.1.4\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -70,6 +70,7 @@
     <Compile Include="FileHandling\MemorySafe.cs" />
     <Compile Include="FileHandling\CSVSafe.cs" />
     <Compile Include="FileHandling\JSONSafe.cs" />
+    <Compile Include="Helper\BefungeHelper.cs" />
     <Compile Include="Helper\GZipHelper.cs" />
     <Compile Include="Log\ConsoleLogger.cs" />
     <Compile Include="OutputHandling\TSVOutputFormatter.cs" />
@@ -89,7 +90,9 @@
     <Compile Include="Test\ResultTester.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon_BefunRep.ico" />

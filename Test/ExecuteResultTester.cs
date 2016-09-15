@@ -1,20 +1,19 @@
-﻿
-using System;
+﻿using System;
 namespace BefunRep.Test
 {
 	public class ExecuteResultTester : ResultTester
 	{
-		public override bool test(string code, long result, out string error)
+		public override bool Test(string code, long result, out string error)
 		{
 			CPTester t = new CPTester(code);
 
 			try
 			{
-				t.run();
+				t.Run();
 			}
 			catch (Exception e)
 			{
-				error = "Exception thrown = " + e.ToString();
+				error = "Exception thrown = " + e;
 				return false;
 			}
 

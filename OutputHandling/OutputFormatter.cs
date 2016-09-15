@@ -7,11 +7,6 @@ namespace BefunRep.OutputHandling
 {
 	public abstract class OutputFormatter
 	{
-		public OutputFormatter()
-		{
-			//
-		}
-
 		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize, long omin, long omax)
 		{
 			long min = Math.Max(safe.GetLowestValue(), omin);

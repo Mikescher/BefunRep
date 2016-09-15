@@ -1,5 +1,4 @@
 ﻿using BefunRep.Exceptions;
-using System.Collections.Generic;
 using System.Text;
 
 namespace BefunRep.Algorithms
@@ -28,14 +27,12 @@ namespace BefunRep.Algorithms
 			}
 			else
 			{
-				return getFactors(new StringBuilder(), lit).ToString();
+				return GetFactors(new StringBuilder(), lit).ToString();
 			}
 		}
 
-		private StringBuilder getFactors(StringBuilder p, long a)
+		private StringBuilder GetFactors(StringBuilder p, long a)
 		{
-			List<int> result = new List<int>();
-
 			if (a < 10)
 			{
 				p.Append(Dig(a));
@@ -46,7 +43,7 @@ namespace BefunRep.Algorithms
 			{
 				if (a % i == 0)
 				{
-					getFactors(p, a / i);
+					GetFactors(p, a / i);
 					p.Append(Dig(i));
 					p.Append('*');
 					return p;
@@ -57,7 +54,7 @@ namespace BefunRep.Algorithms
 			{
 				if ((a - i) % 9 == 0)
 				{
-					getFactors(p, a - i);
+					GetFactors(p, a - i);
 					p.Append(Dig(i));
 					p.Append('+');
 					return p;

@@ -11,8 +11,8 @@ namespace BefunRep.FileHandling
 	/// </summary>
 	public class GZipBinarySafe : RepresentationSafe
 	{
-		private readonly long INITIAL_VALUE_START;
-		private readonly long INITIAL_VALUE_END;
+		private readonly long initialValueStart;
+		private readonly long initialValueEnd;
 
 		private readonly string filepath;
 
@@ -27,8 +27,8 @@ namespace BefunRep.FileHandling
 		{
 			filepath = path;
 
-			INITIAL_VALUE_START = min;
-			INITIAL_VALUE_END = max;
+			initialValueStart = min;
+			initialValueEnd = max;
 		}
 
 		public override string GetRep(long key)
@@ -40,8 +40,8 @@ namespace BefunRep.FileHandling
 		{
 			return tempBinSafe.GetAlgorithm(key);
 		}
-
-		public override Tuple<byte, string> GetCombined(long key)
+		
+		public override BefungeRepresentation GetCombined(long key)
 		{
 			return tempBinSafe.GetCombined(key);
 		}
@@ -62,14 +62,14 @@ namespace BefunRep.FileHandling
 
 				fstream = new FileStream(filepath, FileMode.Open);
 
-				tempBinSafe = new BinarySafe(tempFilePath, INITIAL_VALUE_START, INITIAL_VALUE_END);
+				tempBinSafe = new BinarySafe(tempFilePath, initialValueStart, initialValueEnd);
 				tempBinSafe.Start();
 			}
 			else
 			{
 				fstream = new FileStream(filepath, FileMode.CreateNew);
 
-				tempBinSafe = new BinarySafe(tempFilePath, INITIAL_VALUE_START, INITIAL_VALUE_END);
+				tempBinSafe = new BinarySafe(tempFilePath, initialValueStart, initialValueEnd);
 				tempBinSafe.Start();
 			}
 

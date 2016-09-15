@@ -65,7 +65,7 @@ namespace BefunRep.Algorithms
 			List<char> str;
 			List<StripOp> ops;
 
-			if (calculateStringOps(out str, out ops, lit))
+			if (CalculateStringOps(out str, out ops, lit))
 			{
 				StringBuilder p = new StringBuilder();
 
@@ -74,9 +74,9 @@ namespace BefunRep.Algorithms
 					p.Append(c);
 				p.Append('"');
 
-				for (int i = 0; i < ops.Count; i++)
+				foreach (StripOp op in ops)
 				{
-					switch (ops[i])
+					switch (op)
 					{
 						case StripOp.Add:
 							p.Append('+');
@@ -95,7 +95,7 @@ namespace BefunRep.Algorithms
 			return null;
 		}
 
-		private static bool calculateStringOps(out List<char> str, out List<StripOp> ops, long val)
+		private static bool CalculateStringOps(out List<char> str, out List<StripOp> ops, long val)
 		{
 			if (val < MIN_ASCII)
 			{
@@ -122,13 +122,13 @@ namespace BefunRep.Algorithms
 
 				if (val % curr == 0 && val / curr > MIN_ASCII)
 				{
-					List<char> o_str;
-					List<StripOp> o_ops;
+					List<char> oStr;
+					List<StripOp> oOps;
 
-					if (calculateStringOps(out o_str, out o_ops, val / curr))
+					if (CalculateStringOps(out oStr, out oOps, val / curr))
 					{
-						str = o_str.ToList();
-						ops = o_ops.ToList();
+						str = oStr.ToList();
+						ops = oOps.ToList();
 
 						str.Insert(0, curr);
 						ops.Add(StripOp.Mult);
@@ -146,13 +146,13 @@ namespace BefunRep.Algorithms
 				if (curr == '"')
 					continue;
 
-				List<char> o_str;
-				List<StripOp> o_ops;
+				List<char> oStr;
+				List<StripOp> oOps;
 
-				if (calculateStringOps(out o_str, out o_ops, val - curr))
+				if (CalculateStringOps(out oStr, out oOps, val - curr))
 				{
-					str = o_str.ToList();
-					ops = o_ops.ToList();
+					str = oStr.ToList();
+					ops = oOps.ToList();
 
 					str.Insert(0, curr);
 					ops.Add(StripOp.Add);

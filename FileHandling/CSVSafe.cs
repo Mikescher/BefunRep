@@ -14,12 +14,12 @@ namespace BefunRep.FileHandling
 
 		public CSVSafe(string path)
 		{
-			this.filepath = path;
+			filepath = path;
 
-			load();
+			Load();
 		}
 
-		private void load()
+		private void Load()
 		{
 			if (!File.Exists(filepath))
 				File.CreateText(filepath).Close();
@@ -27,9 +27,9 @@ namespace BefunRep.FileHandling
 			string file = File.ReadAllText(filepath);
 
 			var elements = file
-							.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+							.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
 							.Where(p => p.Contains(' '))
-							.Select(p => new string[] { p.Substring(0, p.IndexOf(' ')), p.Substring(p.IndexOf(' ') + 1) })
+							.Select(p => new[] { p.Substring(0, p.IndexOf(' ')), p.Substring(p.IndexOf(' ') + 1) })
 							.Select(p => p.Select(q => q.Trim()))
 							.Select(p => p.ToList())
 							.Where(p => p.Count == 2)
@@ -48,7 +48,7 @@ namespace BefunRep.FileHandling
 			}
 		}
 
-		private void safe()
+		private void Save()
 		{
 			string txt = String.Join(Environment.NewLine, representations.Select(p => String.Format("{0, -14} {1}", p.Key + "." + p.Value.Item1, p.Value.Item2)));
 
@@ -59,31 +59,28 @@ namespace BefunRep.FileHandling
 		{
 			if (representations.ContainsKey(key))
 				return representations[key].Item2;
-			else
-				return null;
+			return null;
 		}
 
 		public override byte? GetAlgorithm(long key)
 		{
 			if (representations.ContainsKey(key))
 				return representations[key].Item1;
-			else
-				return null;
+			return null;
 		}
 
-		public override Tuple<byte, string> GetCombined(long key)
+		public override BefungeRepresentation GetCombined(long key)
 		{
 			if (representations.ContainsKey(key))
-				return representations[key];
-			else
-				return null;
+				return new BefungeRepresentation(representations[key].Item1, representations[key].Item2);
+			return null;
 		}
 
 		public override void Put(long key, string representation, byte algorithm)
 		{
 			representations[key] = Tuple.Create(algorithm, representation);
 
-			safe();
+			Save();
 		}
 
 		public override void Start()
@@ -93,7 +90,7 @@ namespace BefunRep.FileHandling
 
 		public override void Stop()
 		{
-			safe();
+			Save();
 		}
 
 		public override void LightLoad()

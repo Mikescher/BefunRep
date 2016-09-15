@@ -10,8 +10,8 @@ namespace BefunRep.Algorithms
 	/// </summary>
 	public class CharMultAlgorithm : RepAlgorithm
 	{
-		private Dictionary<long, string> cache = new Dictionary<long, string>();
-		private Stack<char> stack = new Stack<char>();
+		private readonly Dictionary<long, string> cache = new Dictionary<long, string>();
+		private readonly Stack<char> stack = new Stack<char>();
 
 		public CharMultAlgorithm(byte aid)
 			: base(aid)
@@ -23,7 +23,7 @@ namespace BefunRep.Algorithms
 		{
 			if (value >= 0)
 			{
-				return getPositive(value);
+				return GetPositive(value);
 			}
 			else
 			{
@@ -31,9 +31,9 @@ namespace BefunRep.Algorithms
 			}
 		}
 
-		private string getPositive(long value)
+		private string GetPositive(long value)
 		{
-			string current = getMultiplicands(value);
+			string current = GetMultiplicands(value);
 			if (current != null)
 				current = "" + '"' + current + '"' + "*".Repeat(current.Length - 1);
 
@@ -43,7 +43,7 @@ namespace BefunRep.Algorithms
 				if (i == 0)
 					continue;
 
-				string result = getMultiplicands(value + i);
+				string result = GetMultiplicands(value + i);
 				if (result == null)
 					continue;
 
@@ -56,7 +56,7 @@ namespace BefunRep.Algorithms
 				if (i == '"')
 					continue;
 
-				string result = getMultiplicands(value + i);
+				string result = GetMultiplicands(value + i);
 				if (result == null)
 					continue;
 
@@ -69,7 +69,7 @@ namespace BefunRep.Algorithms
 				if (i == '"')
 					continue;
 
-				string result = getMultiplicands(value - i);
+				string result = GetMultiplicands(value - i);
 				if (result == null)
 					continue;
 
@@ -80,7 +80,7 @@ namespace BefunRep.Algorithms
 			return current;
 		}
 
-		private string getMultiplicands(long value)
+		private string GetMultiplicands(long value)
 		{
 			if (value == 0)
 				return null;

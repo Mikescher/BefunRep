@@ -1,8 +1,7 @@
-﻿
-namespace BefunRep.Test
+﻿namespace BefunRep.Test
 {
 	public abstract class ResultTester
 	{
-		public abstract bool test(string code, long result, out string error);
+		public abstract bool Test(string code, long result, out string error);
 	}
 }

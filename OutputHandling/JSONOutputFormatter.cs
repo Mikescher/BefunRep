@@ -7,24 +7,18 @@ namespace BefunRep.OutputHandling
 {
 	public class JSONOutputFormatter : OutputFormatter
 	{
-		public JSONOutputFormatter()
-			: base()
-		{
-			//
-		}
-
 		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{
 			var data = CustomExtensions
 				.LongRange(min, max)
-				.Where(p => safe.GetRep(p) != null)
-				.Where(p => safe.GetAlgorithm(p) != null)
+				.Select(p => new {Number=p, Rep = safe.GetCombined(p)})
+				.Where(p => p != null)
 				.Select(p => new
 				{
-					value = p,
-					representation = safe.GetRep(p),
-					algorithmID = safe.GetAlgorithm(p),
-					algorithm = RepCalculator.algorithmNames[safe.GetAlgorithm(p).Value]
+					value = p.Number,
+					representation = p.Rep.Representation,
+					algorithmID = p.Rep.Algorithm,
+					algorithm = RepCalculator.AlgorithmNames[p.Rep.Algorithm]
 				});
 
 			File.WriteAllText(filepath, JsonConvert.SerializeObject(data, Formatting.Indented));
@@ -34,16 +28,15 @@ namespace BefunRep.OutputHandling
 		{
 			var data = CustomExtensions
 				.LongRange(min, max)
-				.Where(p => safe.GetRep(p) != null)
-				.Where(p => safe.GetAlgorithm(p) != null)
+				.Select(p => new { Number = p, Rep = safe.GetCombined(p) })
+				.Where(p => p != null)
 				.Select(p => new
 				{
-					value = p,
-					representation = safe.GetRep(p),
-					algorithmID = safe.GetAlgorithm(p),
-					algorithm = RepCalculator.algorithmNames[safe.GetAlgorithm(p).Value]
+					value = p.Number,
+					representation = p.Rep.Representation,
+					algorithmID = p.Rep.Algorithm,
+					algorithm = RepCalculator.AlgorithmNames[p.Rep.Algorithm]
 				});
-
 
 			return JsonConvert.SerializeObject(data, Formatting.Indented);
 		}

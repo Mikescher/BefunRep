@@ -10,17 +10,12 @@ namespace BefunRep.FileHandling
 
 		public MemorySafe()
 		{
-			load();
+			Load();
 		}
 
-		private void load()
+		private void Load()
 		{
 			representations = new SortedDictionary<long, Tuple<byte, string>>();
-		}
-
-		private void safe()
-		{
-			// NOP
 		}
 
 		public override string GetRep(long key)
@@ -39,10 +34,10 @@ namespace BefunRep.FileHandling
 				return null;
 		}
 
-		public override Tuple<byte, string> GetCombined(long key)
+		public override BefungeRepresentation GetCombined(long key)
 		{
 			if (representations.ContainsKey(key))
-				return representations[key];
+				return new BefungeRepresentation(representations[key].Item1, representations[key].Item2);
 			else
 				return null;
 		}
@@ -50,8 +45,6 @@ namespace BefunRep.FileHandling
 		public override void Put(long key, string representation, byte algorithm)
 		{
 			representations[key] = Tuple.Create(algorithm, representation);
-
-			safe();
 		}
 
 		public override void Start()
@@ -61,7 +54,7 @@ namespace BefunRep.FileHandling
 
 		public override void Stop()
 		{
-			safe();
+			//
 		}
 
 		public override void LightLoad()

@@ -7,25 +7,18 @@ namespace BefunRep.OutputHandling
 {
 	public class CSVOutputFormatter : OutputFormatter
 	{
-		public CSVOutputFormatter()
-			: base()
-		{
-			//
-		}
-
 		public override void Output(RepresentationSafe safe, string filepath, long min, long max)
 		{
 			using (StreamWriter writer = new StreamWriter(filepath))
 			{
 				for (long v = min; v < max; v++)
 				{
-					string rep = safe.GetRep(v);
-					byte? algo = safe.GetAlgorithm(v);
+					var rep = safe.GetCombined(v);
 
-					if (rep == null || algo == null)
+					if (rep == null)
 						continue;
 
-					writer.WriteLine("{0, -10} {1}", v, rep);
+					writer.WriteLine("{0, -10} {1}", rep.Algorithm, rep.Representation);
 				}
 			}
 		}
@@ -36,13 +29,12 @@ namespace BefunRep.OutputHandling
 
 			for (long v = min; v < max; v++)
 			{
-				string rep = safe.GetRep(v);
-				byte? algo = safe.GetAlgorithm(v);
+				var rep = safe.GetCombined(v);
 
-				if (rep == null || algo == null)
+				if (rep == null)
 					continue;
 
-				writer.AppendLine(String.Format("{0, -10} {1}", v, rep));
+				writer.AppendLine(String.Format("{0, -10} {1}", rep.Algorithm, rep.Representation));
 			}
 
 			return writer.ToString();

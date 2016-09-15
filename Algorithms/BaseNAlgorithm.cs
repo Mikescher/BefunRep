@@ -1,4 +1,4 @@
-﻿using System;
+﻿using BefunRep.Helper;
 using System.Linq;
 using System.Text;
 
@@ -20,28 +20,26 @@ namespace BefunRep.Algorithms
 
 		protected override string Get(long value)
 		{
-			return Enumerable.Range(2, 8).Select(p => get(value, p)).Where(p => p != null).OrderBy(p => p.Length).FirstOrDefault();
+			return Enumerable.Range(2, 8).Select(p => Get(value, p)).Where(p => p != null).OrderBy(p => p.Length).FirstOrDefault();
 		}
 
-		private string get(long value, int befbase)
+		private string Get(long value, int befbase)
 		{
-			StringBuilder p = new StringBuilder();
-
 			if (value < 0)
 				return null;
 			else
-				return getPositive(value, befbase);
+				return GetPositive(value, befbase);
 		}
 
-		private string getPositive(long value, int befbase)
+		private string GetPositive(long value, int befbase)
 		{
-			StringBuilder p_num = new StringBuilder();
+			StringBuilder pNum = new StringBuilder();
 
-			StringBuilder p_op = new StringBuilder();
+			StringBuilder pOp = new StringBuilder();
 
-			string rep = ConvertToBase(value, befbase);
+			string rep = BefungeHelper.ConvertToBase(value, befbase);
 
-			bool skipM_base = false;
+			bool skipMBase = false;
 			for (int i = 0; i < rep.Length; i++)
 			{
 				int digit = rep[i] - '0';
@@ -52,66 +50,35 @@ namespace BefunRep.Algorithms
 				{
 					if (digit == 1 && !last)
 					{
-						p_num.Append(Dig(befbase)); // Don't calculate 1 * $befbase ... directly write $befbase
-						skipM_base = true;
+						pNum.Append(Dig(befbase)); // Don't calculate 1 * $befbase ... directly write $befbase
+						skipMBase = true;
 					}
 					else
 					{
-						p_num.Append(Dig(digit));
+						pNum.Append(Dig(digit));
 					}
 				}
 				else
 				{
-					if (skipM_base)
+					if (skipMBase)
 					{
-						skipM_base = false;
+						skipMBase = false;
 					}
 					else
 					{
-						p_num.Append(Dig(befbase));
-						p_op.Append("*");
+						pNum.Append(Dig(befbase));
+						pOp.Append("*");
 					}
 
 					if (digit != 0) // if digit == 0 dont calculate +0
 					{
-						p_num.Append(Dig(digit));
-						p_op.Append("+");
+						pNum.Append(Dig(digit));
+						pOp.Append("+");
 					}
 				}
 			}
 
-			return new String(p_num.ToString().ToCharArray().Reverse().ToArray()) + p_op.ToString();
-		}
-
-		private string ConvertToBase(long decimalNumber, int radix)
-		{
-			const int BitsInLong = 64;
-			const string Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-			if (radix < 2 || radix > Digits.Length)
-				throw new ArgumentException("The radix must be >= 2 and <= " + Digits.Length.ToString());
-
-			if (decimalNumber == 0)
-				return "0";
-
-			int index = BitsInLong - 1;
-			long currentNumber = Math.Abs(decimalNumber);
-			char[] charArray = new char[BitsInLong];
-
-			while (currentNumber != 0)
-			{
-				int remainder = (int)(currentNumber % radix);
-				charArray[index--] = Digits[remainder];
-				currentNumber = currentNumber / radix;
-			}
-
-			string result = new String(charArray, index + 1, BitsInLong - index - 1);
-			if (decimalNumber < 0)
-			{
-				result = "-" + result;
-			}
-
-			return result;
+			return new string(pNum.ToString().ToCharArray().Reverse().ToArray()) + pOp;
 		}
 	}
 }

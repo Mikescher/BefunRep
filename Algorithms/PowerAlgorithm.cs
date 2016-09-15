@@ -20,7 +20,7 @@ namespace BefunRep.Algorithms
 		{
 			if (value > 0)
 			{
-				return getPositive(value);
+				return GetPositive(value);
 			}
 			else
 			{
@@ -28,7 +28,7 @@ namespace BefunRep.Algorithms
 			}
 		}
 
-		public string getPositive(long value)
+		private string GetPositive(long value)
 		{
 			List<string> reps = new List<string>();
 
@@ -41,27 +41,27 @@ namespace BefunRep.Algorithms
 				if (PowL(factor, power) != value)
 					continue;
 
-				string factor_rep = Representations.GetRep(factor);
+				string factorRep = Representations.GetRep(factor);
 
-				if (factor_rep == null)
+				if (factorRep == null)
 					continue;
 
 				int fcount = 1;
-				string p_op = "";
+				string pOp = "";
 				while (fcount < power)
 				{
 					if (fcount * 2 <= power)
 					{
 						fcount *= 2;
-						p_op += ":*";
+						pOp += ":*";
 					}
 					else
 					{
 						fcount++;
-						p_op = ":" + p_op + "*";
+						pOp = ":" + pOp + "*";
 					}
 				}
-				reps.Add(factor_rep + p_op);
+				reps.Add(factorRep + pOp);
 			}
 
 			if (reps.Count == 0)
