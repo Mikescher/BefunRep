@@ -1,21 +1,21 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.IO;
 using System.Text;
 
 namespace BefunRep.Log
 {
-	public class ConsoleLogger
+	public static class ConsoleLogger
 	{
-		private static StringBuilder builder = new StringBuilder();
-		private static int writecount = 0;
+		private static readonly StringBuilder _builder = new StringBuilder();
 
-		private static string savepath = null;
+		private static string _savepath = null;
 
-		public static void setPath(string p)
+		public static void SetPath(string p)
 		{
 			if (p == null)
 			{
-				savepath = null;
+				_savepath = null;
 				return;
 			}
 
@@ -23,67 +23,104 @@ namespace BefunRep.Log
 
 			if (p.EndsWith("/") || p.EndsWith("\\"))
 			{
-				savepath = Path.Combine(p, string.Format("log_{0:yyyy-MM-dd_HH-mm-ss}.txt", DateTime.Now));
+				_savepath = Path.Combine(p, string.Format("log_{0:yyyy-MM-dd_HH-mm-ss}.txt", DateTime.Now));
 
 				int ctr = 0;
-				while (File.Exists(savepath))
+				while (File.Exists(_savepath))
 				{
 					ctr++;
 
-					savepath = Path.Combine(p, string.Format("log_{0:yyyy-MM-dd_HH-mm-ss} ({1}).txt", DateTime.Now, ctr));
+					_savepath = Path.Combine(p, string.Format("log_{0:yyyy-MM-dd_HH-mm-ss} ({1}).txt", DateTime.Now, ctr));
 				}
 			}
 			else
 			{
 				string fldr = Path.GetDirectoryName(p);
-				Directory.CreateDirectory(fldr);
+				if (fldr != null) Directory.CreateDirectory(fldr);
 
-				savepath = p;
+				_savepath = p;
 			}
 
 			WriteLine();
-			WriteLineFormatted("[{0:HH:mm:ss}] Logging to " + savepath, DateTime.Now);
+			WriteTimedLine("Logging to " + _savepath);
 			WriteLine();
 		}
 
+		public static void WriteTimedLine(string text)
+		{
+			WriteLine(string.Format("[{0:HH:mm:ss}] ", DateTime.Now) + text);
+		}
+
+		[StringFormatMethod("format")]
+		public static void WriteTimedLine(string format, object arg0)
+		{
+			WriteLine(string.Format("[{0:HH:mm:ss}] ", DateTime.Now) + string.Format(format, arg0));
+		}
+
+		[StringFormatMethod("format")]
+		public static void WriteTimedLine(string format, object arg0, object arg1)
+		{
+			WriteLine(string.Format("[{0:HH:mm:ss}] ", DateTime.Now) + string.Format(format, arg0, arg1));
+		}
+
+		[StringFormatMethod("format")]
+		public static void WriteTimedLine(string format, object arg0, object arg1, object arg2)
+		{
+			WriteLine(string.Format("[{0:HH:mm:ss}] ", DateTime.Now) + string.Format(format, arg0, arg1, arg2));
+		}
+
+		[StringFormatMethod("format")]
+		public static void WriteTimedLine(string format, params object[] args)
+		{
+			WriteLine(string.Format("[{0:HH:mm:ss}] ", DateTime.Now) + string.Format(format, args));
+		}
+
+		[StringFormatMethod("format")]
 		public static void WriteLineFormatted(string format, object arg0)
 		{
 			WriteLine(string.Format(format, arg0));
 		}
 
+		[StringFormatMethod("format")]
 		public static void WriteLineFormatted(string format, object arg0, object arg1)
 		{
 			WriteLine(string.Format(format, arg0, arg1));
 		}
 
+		[StringFormatMethod("format")]
 		public static void WriteLineFormatted(string format, object arg0, object arg1, object arg2)
 		{
 			WriteLine(string.Format(format, arg0, arg1, arg2));
 		}
 
+		[StringFormatMethod("format")]
 		public static void WriteLineFormatted(string format, params object[] args)
 		{
 			WriteLine(string.Format(format, args));
 		}
 
-		public static void WriteFormatted(string s, object arg0)
+		[StringFormatMethod("format")]
+		public static void WriteFormatted(string format, object arg0)
 		{
-			Write(string.Format(s, arg0));
+			Write(string.Format(format, arg0));
 		}
 
-		public static void WriteFormatted(string s, object arg0, object arg1)
+		[StringFormatMethod("format")]
+		public static void WriteFormatted(string format, object arg0, object arg1)
 		{
-			Write(string.Format(s, arg0, arg1));
+			Write(string.Format(format, arg0, arg1));
 		}
 
-		public static void WriteFormatted(string s, object arg0, object arg1, object arg2)
+		[StringFormatMethod("format")]
+		public static void WriteFormatted(string format, object arg0, object arg1, object arg2)
 		{
-			Write(string.Format(s, arg0, arg1, arg2));
+			Write(string.Format(format, arg0, arg1, arg2));
 		}
 
-		public static void WriteFormatted(string s, params object[] args)
+		[StringFormatMethod("format")]
+		public static void WriteFormatted(string format, params object[] args)
 		{
-			Write(string.Format(s, args));
+			Write(string.Format(format, args));
 		}
 
 		public static void WriteLine()
@@ -95,30 +132,27 @@ namespace BefunRep.Log
 		{
 			Console.Out.WriteLine(s);
 
-			if (savepath != null)
-				builder.AppendLine(s);
-
-			writecount++;
+			if (_savepath != null)
+				_builder.AppendLine(s);
 		}
 
 		public static void Write(string s)
 		{
 			Console.Out.Write(s);
 
-			if (savepath != null)
-				builder.Append(s);
-
-			writecount++;
+			if (_savepath != null)
+				_builder.Append(s);
 		}
 
-		public static void save()
+		public static void Save()
 		{
-			if (savepath != null)
+			if (_savepath != null)
 			{
-				Directory.CreateDirectory(Path.GetDirectoryName(savepath));
+				var dir = Path.GetDirectoryName(_savepath);
+				if (dir != null) Directory.CreateDirectory(dir);
 
 				WriteLine("Saving log ...");
-				File.WriteAllText(savepath, builder.ToString());
+				File.WriteAllText(_savepath, _builder.ToString());
 
 			}
 		}

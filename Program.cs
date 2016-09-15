@@ -15,7 +15,7 @@ namespace BefunRep
 		public const string TITLE = "BefunRep";
 
 		private readonly DateTime startTime = DateTime.Now;
-		private List<int> founds = new List<int>();
+		private readonly List<int> founds = new List<int>();
 
 		private long lowerBoundary;
 		private long upperBoundary;
@@ -39,10 +39,10 @@ namespace BefunRep
 
 		static void Main(string[] args)
 		{
-			new Program(args);
+			new Program().Run(args);
 		}
 
-		public Program(string[] args)
+		private void Run(string[] args)
 		{
 			try
 			{
@@ -75,7 +75,7 @@ namespace BefunRep
 
 			//##############
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Calculations Started.", DateTime.Now);
+			ConsoleLogger.WriteTimedLine("Calculations Started.");
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine();
 
@@ -85,16 +85,16 @@ namespace BefunRep
 				founds.Add(foundcount);
 
 				ConsoleLogger.WriteLine();
-				ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Iteration {1} Finished (+{2})", DateTime.Now, i, foundcount);
+				ConsoleLogger.WriteTimedLine("Iteration {0} Finished (+{1})", i, foundcount);
 				ConsoleLogger.WriteLine();
 
 				if (foundcount == 0)
 					break;
 			}
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Caclulations Finished.", DateTime.Now);
+			ConsoleLogger.WriteTimedLine("Caclulations Finished.");
 			ConsoleLogger.WriteLine();
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Started.", DateTime.Now);
+			ConsoleLogger.WriteTimedLine("Outputting Started.");
 
 			if (outpath != null || statsLevel > 0)
 			{
@@ -104,7 +104,7 @@ namespace BefunRep
 					{
 						formatter.Output(safe, outpath, maxoutputsize, outputminimum ?? long.MinValue, outputmaximum ?? long.MaxValue);
 
-						ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting Finished.", DateTime.Now);
+						ConsoleLogger.WriteTimedLine("Outputting Finished.");
 					}
 
 					if (statsLevel > 0)
@@ -120,7 +120,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine();
 			ConsoleLogger.WriteLine();
 
-			ConsoleLogger.save(); // ############# ENDE #############
+			ConsoleLogger.Save(); // ############# ENDE #############
 
 			if (logpath == null)
 				PrintAnyKeyMessage();
@@ -189,36 +189,36 @@ namespace BefunRep
 
 		private void OutputCMDA()
 		{
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Limits        := [{1}, {2}]{3}", DateTime.Now,
+			ConsoleLogger.WriteTimedLine("Limits        := [{1}, {2}]{3}",
 				lowerBoundary,
 				upperBoundary,
 				boundaryDiscovery ? "      (via auto discovery)" : "");
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Iterations    := {1}", DateTime.Now, iterations < 0 ? "INF" : (iterations == 0 ? "NONE" : (iterations.ToString())));
+			ConsoleLogger.WriteTimedLine("Iterations    := {0}", iterations < 0 ? "INF" : (iterations == 0 ? "NONE" : (iterations.ToString())));
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Testing       := {1}", DateTime.Now, testResults.ToString().ToLower());
+			ConsoleLogger.WriteTimedLine("Testing       := {0}", testResults.ToString().ToLower());
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Reset         := {1}", DateTime.Now, doReset.ToString().ToLower());
+			ConsoleLogger.WriteTimedLine("Reset         := {0}", doReset.ToString().ToLower());
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Quiet         := {1}", DateTime.Now, quiet.ToString().ToLower());
+			ConsoleLogger.WriteTimedLine("Quiet         := {0}", quiet.ToString().ToLower());
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Statistics    := {1}", DateTime.Now, new string[] { "none", "simple", "verbose", "all" }[statsLevel]);
+			ConsoleLogger.WriteTimedLine("Statistics    := {0}", new[] { "none", "simple", "verbose", "all" }[statsLevel]);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Algorithm     := {1}", DateTime.Now, algorithm == -1 ? "all" : RepCalculator.algorithmNames[algorithm]);
+			ConsoleLogger.WriteTimedLine("Algorithm     := {0}", algorithm == -1 ? "all" : RepCalculator.algorithmNames[algorithm]);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safetype      := {1}", DateTime.Now, safe.GetType().Name);
+			ConsoleLogger.WriteTimedLine("Safetype      := {0}", safe.GetType().Name);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Safepath      := {1}", DateTime.Now, safepath);
+			ConsoleLogger.WriteTimedLine("Safepath      := {0}", safepath);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputtype    := {1}", DateTime.Now, formatter.GetType().Name);
+			ConsoleLogger.WriteTimedLine("Outputtype    := {0}", formatter.GetType().Name);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputrange   := {1}", DateTime.Now, ((outputminimum ?? outputmaximum) == null) ? ("[ALL]") : ("[" + outputminimum + " - " + outputmaximum + "]"));
+			ConsoleLogger.WriteTimedLine("Outputrange   := {0}", ((outputminimum ?? outputmaximum) == null) ? ("[ALL]") : ("[" + outputminimum + " - " + outputmaximum + "]"));
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputpath    := {1}", DateTime.Now, outpath);
+			ConsoleLogger.WriteTimedLine("Outputpath    := {0}", outpath);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] MaxOutputSize := {1}", DateTime.Now, maxoutputsize);
+			ConsoleLogger.WriteTimedLine("MaxOutputSize := {0}", maxoutputsize);
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Logpath       := {1}", DateTime.Now, logpath ?? "<NULL>");
+			ConsoleLogger.WriteTimedLine("Logpath       := {0}", logpath ?? "<NULL>");
 
 			ConsoleLogger.WriteLine();
 		}
@@ -266,7 +266,7 @@ namespace BefunRep
 				formatter = new DummyOutputFormatter();
 			}
 
-			ConsoleLogger.setPath(logpath);
+			ConsoleLogger.SetPath(logpath);
 		}
 
 		private CommandLineArguments LoadCMDA(string[] args)

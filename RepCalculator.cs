@@ -99,7 +99,7 @@ namespace BefunRep
 			time = Environment.TickCount - time;
 			algorithmTime[algonum] += time;
 
-			ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Algorithm {1} Finished (+{2})", DateTime.Now, algorithmNames[algonum], algofound);
+			ConsoleLogger.WriteTimedLine("Algorithm {0} Finished (+{1})", algorithmNames[algonum], algofound);
 
 			return algofound;
 		}
@@ -124,34 +124,28 @@ namespace BefunRep
 				if (!quiet)
 				{
 					if (before != "")
-						ConsoleLogger.WriteLine(
-							String.Format("[{0:HH:mm:ss}] {1,16} Found: {2,11}  ->  {3,-24} (before {4,-16} {5,-24} = +{6})",
-								DateTime.Now,
+						ConsoleLogger.WriteTimedLine("{0,16} Found: {1,11}  ->  {2,-24} (before {3,-16} {4,-24} = +{5})",
 								algo.GetType().Name.Replace("Algorithm", ""),
 								v,
 								result,
 								beforeAlgo,
 								before,
-								before.Length - result.Length)
-							);
+								before.Length - result.Length);
 					else
-						ConsoleLogger.WriteLine(
-							String.Format("[{0:HH:mm:ss}] {1,16} Found: {2,11}  ->  {3,-24}",
-								DateTime.Now,
+						ConsoleLogger.WriteTimedLine("{0,16} Found: {1,11}  ->  {2,-24}",
 								algo.GetType().Name.Replace("Algorithm", ""),
 								v,
-								result)
-							);
+								result);
 				}
 
 				if (!tester.test(result, v, out outerror))
 				{
-					Console.Error.WriteLine(String.Format("[{0:HH:mm:ss}] TEST RESULT ERROR", DateTime.Now));
-					Console.Error.WriteLine(String.Format("[{0:HH:mm:ss}] #################", DateTime.Now));
-					Console.Error.WriteLine(String.Format("[{0:HH:mm:ss}] TEST Program = {1}", DateTime.Now, result));
-					Console.Error.WriteLine(String.Format("[{0:HH:mm:ss}] TEST Algorithm = {1}", DateTime.Now, algo.GetType().Name));
-					Console.Error.WriteLine(String.Format("[{0:HH:mm:ss}] TEST Expected Result = {1}", DateTime.Now, v));
-					Console.Error.WriteLine(String.Format("[{0:HH:mm:ss}] TEST Problem = \"{1}\"", DateTime.Now, outerror));
+					Console.Error.WriteLine("[{0:HH:mm:ss}] TEST RESULT ERROR", DateTime.Now);
+					Console.Error.WriteLine("[{0:HH:mm:ss}] #################", DateTime.Now);
+					Console.Error.WriteLine("[{0:HH:mm:ss}] TEST Program = {1}", DateTime.Now, result);
+					Console.Error.WriteLine("[{0:HH:mm:ss}] TEST Algorithm = {1}", DateTime.Now, algo.GetType().Name);
+					Console.Error.WriteLine("[{0:HH:mm:ss}] TEST Expected Result = {1}", DateTime.Now, v);
+					Console.Error.WriteLine("[{0:HH:mm:ss}] TEST Problem = \"{1}\"", DateTime.Now, outerror);
 
 					Thread.Sleep(5 * 1000);
 				}

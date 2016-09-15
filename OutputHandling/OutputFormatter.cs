@@ -19,7 +19,7 @@ namespace BefunRep.OutputHandling
 
 			if (maxOutputSize < 0 || (max - min) <= maxOutputSize)
 			{
-				ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting to {1}", DateTime.Now, Path.GetFileName(filepath));
+				ConsoleLogger.WriteTimedLine("Outputting to {0}", Path.GetFileName(filepath));
 
 				Output(safe, filepath, min, max);
 			}
@@ -31,7 +31,7 @@ namespace BefunRep.OutputHandling
 				for (int i = 1; min < max; i++)
 				{
 					string segmented_fp = fp_start + "_" + i + fp_end;
-					ConsoleLogger.WriteLineFormatted("[{0:HH:mm:ss}] Outputting to {1}", DateTime.Now, Path.GetFileName(segmented_fp));
+					ConsoleLogger.WriteTimedLine("Outputting to {0}", Path.GetFileName(segmented_fp));
 
 					Output(safe, segmented_fp, min, Math.Min(min + maxOutputSize, max));
 					min += maxOutputSize;
