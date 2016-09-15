@@ -172,7 +172,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine("-reset");
 			ConsoleLogger.WriteLine("-algorithm=[0 - " + (RepCalculator.algorithms.Length - 1) + "]");
 			ConsoleLogger.WriteLine("-safe=[filename].[csv|json|bin|bin.gz]");
-			ConsoleLogger.WriteLine("-out=[filename].[csv|json|xml]");
+			ConsoleLogger.WriteLine("-out=[filename].[csv|tsv|json|xml]");
 			ConsoleLogger.WriteLine("-iterations=[-1 | 0-n ]");
 			ConsoleLogger.WriteLine("-stats=[0-3]");
 			ConsoleLogger.WriteLine("-log={directory of file}");
@@ -254,6 +254,8 @@ namespace BefunRep
 			{
 				if (outpath.ToLower().EndsWith(".csv"))
 					formatter = new CSVOutputFormatter();
+				if (outpath.ToLower().EndsWith(".tsv"))
+					formatter = new TSVOutputFormatter();
 				else if (outpath.ToLower().EndsWith(".json"))
 					formatter = new JSONOutputFormatter();
 				else if (outpath.ToLower().EndsWith(".xml"))
@@ -290,11 +292,11 @@ namespace BefunRep
 			return cmda;
 		}
 
-		private void PrintStats(RepresentationSafe safe)
+		private void PrintStats(RepresentationSafe statsafe)
 		{
 			if (statsLevel >= 1) //############################################
 			{
-				SafeInfo info = safe.GetInformations();
+				SafeInfo info = statsafe.GetInformations();
 
 				ConsoleLogger.WriteLine("  Statistics  ");
 				ConsoleLogger.WriteLine("##############");

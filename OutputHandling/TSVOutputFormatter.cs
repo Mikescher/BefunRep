@@ -5,9 +5,9 @@ using System.Text;
 
 namespace BefunRep.OutputHandling
 {
-	public class CSVOutputFormatter : OutputFormatter
+	public class TSVOutputFormatter : OutputFormatter
 	{
-		public CSVOutputFormatter()
+		public TSVOutputFormatter()
 			: base()
 		{
 			//
@@ -25,7 +25,7 @@ namespace BefunRep.OutputHandling
 					if (rep == null || algo == null)
 						continue;
 
-					writer.WriteLine("{0, -10} {1}", v, rep);
+					writer.WriteLine("{0:X}\t{1}", v, rep);
 				}
 			}
 		}
@@ -42,7 +42,7 @@ namespace BefunRep.OutputHandling
 				if (rep == null || algo == null)
 					continue;
 
-				writer.AppendLine(String.Format("{0, -10} {1}", v, rep));
+				writer.AppendLine(String.Format("{0:X}\t{1}", v, rep));
 			}
 
 			return writer.ToString();
