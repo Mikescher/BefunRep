@@ -25,15 +25,15 @@ namespace BefunRep.OutputHandling
 			}
 			else
 			{
-				string fp_start = filepath.Substring(0, filepath.Length - Path.GetExtension(filepath).Length);
-				string fp_end = Path.GetExtension(filepath);
+				string fpStart = filepath.Substring(0, filepath.Length - Path.GetExtension(filepath).Length);
+				string fpEnd = Path.GetExtension(filepath);
 
 				for (int i = 1; min < max; i++)
 				{
-					string segmented_fp = fp_start + "_" + i + fp_end;
-					ConsoleLogger.WriteTimedLine("Outputting to {0}", Path.GetFileName(segmented_fp));
+					string segmentedFilepath = string.Format("{0}_{1:0000}{2}", fpStart, i, fpEnd);
+					ConsoleLogger.WriteTimedLine("Outputting to {0}", Path.GetFileName(segmentedFilepath));
 
-					Output(safe, segmented_fp, min, Math.Min(min + maxOutputSize, max));
+					Output(safe, segmentedFilepath, min, Math.Min(min + maxOutputSize, max));
 					min += maxOutputSize;
 				}
 			}
