@@ -17,14 +17,14 @@ namespace BefunRep.OutputHandling
 		{
 			var data = CustomExtensions
 				.LongRange(min, max)
-				.Where(p => safe.get(p) != null)
-				.Where(p => safe.getAlgorithm(p) != null)
+				.Where(p => safe.GetRep(p) != null)
+				.Where(p => safe.GetAlgorithm(p) != null)
 				.Select(p => new
 				{
 					value = p,
-					representation = safe.get(p),
-					algorithmID = safe.getAlgorithm(p),
-					algorithm = RepCalculator.algorithmNames[safe.getAlgorithm(p).Value]
+					representation = safe.GetRep(p),
+					algorithmID = safe.GetAlgorithm(p),
+					algorithm = RepCalculator.algorithmNames[safe.GetAlgorithm(p).Value]
 				});
 
 			File.WriteAllText(filepath, JsonConvert.SerializeObject(data, Formatting.Indented));
@@ -34,14 +34,14 @@ namespace BefunRep.OutputHandling
 		{
 			var data = CustomExtensions
 				.LongRange(min, max)
-				.Where(p => safe.get(p) != null)
-				.Where(p => safe.getAlgorithm(p) != null)
+				.Where(p => safe.GetRep(p) != null)
+				.Where(p => safe.GetAlgorithm(p) != null)
 				.Select(p => new
 				{
 					value = p,
-					representation = safe.get(p),
-					algorithmID = safe.getAlgorithm(p),
-					algorithm = RepCalculator.algorithmNames[safe.getAlgorithm(p).Value]
+					representation = safe.GetRep(p),
+					algorithmID = safe.GetAlgorithm(p),
+					algorithm = RepCalculator.algorithmNames[safe.GetAlgorithm(p).Value]
 				});
 
 

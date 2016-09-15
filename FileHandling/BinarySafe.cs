@@ -44,7 +44,7 @@ namespace BefunRep.FileHandling
 			this.INITIAL_VALUE_END = max;
 		}
 
-		public override string get(long key)
+		public override string GetRep(long key)
 		{
 			if (key < valueStart || key >= valueEnd)
 				return null;
@@ -73,7 +73,7 @@ namespace BefunRep.FileHandling
 			return result;
 		}
 
-		public override byte? getAlgorithm(long key)
+		public override byte? GetAlgorithm(long key)
 		{
 			if (key < valueStart || key >= valueEnd)
 				return null;
@@ -91,7 +91,34 @@ namespace BefunRep.FileHandling
 			return read[codeLength - 1];
 		}
 
-		public override void put(long key, string representation, byte algorithm)
+		public override Tuple<byte, string> GetCombined(long key)
+		{
+			if (key < valueStart || key >= valueEnd)
+				return null;
+
+			fstream.Seek(HEADER_SIZE + codeLength * (key - valueStart), SeekOrigin.Begin);
+
+			byte[] read = new byte[codeLength];
+			fstream.Read(read, 0, codeLength);
+
+			if (read[0] == 0)
+			{
+				return null;
+			}
+
+			StringBuilder b = new StringBuilder();
+			for (int i = 0; i < codeLength; i++)
+			{
+				if (read[i] == 0)
+					break;
+
+				b.Append((char)read[i]);
+			}
+
+			return Tuple.Create(read[codeLength - 1], b.ToString());
+		}
+
+		public override void Put(long key, string representation, byte algorithm)
 		{
 			if (key >= valueEnd)
 				updateEndSize(key);
@@ -120,7 +147,7 @@ namespace BefunRep.FileHandling
 			Changed = true;
 		}
 
-		public override void start()
+		public override void Start()
 		{
 			if (File.Exists(filepath))
 			{
@@ -154,7 +181,7 @@ namespace BefunRep.FileHandling
 			Changed = false;
 		}
 
-		public override void stop()
+		public override void Stop()
 		{
 			fstream.Close();
 		}
@@ -280,12 +307,12 @@ namespace BefunRep.FileHandling
 			end = BitConverter.ToInt64(arr, 12);
 		}
 
-		public override long getLowestValue()
+		public override long GetLowestValue()
 		{
 			return valueStart;
 		}
 
-		public override long getHighestValue()
+		public override long GetHighestValue()
 		{
 			return valueEnd;
 		}

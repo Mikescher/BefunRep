@@ -98,7 +98,7 @@ namespace BefunRep
 
 			if (outpath != null || statsLevel > 0)
 			{
-				safe.start();
+				safe.Start();
 				{
 					if (outpath != null)
 					{
@@ -114,7 +114,7 @@ namespace BefunRep
 						PrintStats(safe);
 					}
 				}
-				safe.stop();
+				safe.Stop();
 			}
 
 			ConsoleLogger.WriteLine();
@@ -189,7 +189,7 @@ namespace BefunRep
 
 		private void OutputCMDA()
 		{
-			ConsoleLogger.WriteTimedLine("Limits        := [{1}, {2}]{3}",
+			ConsoleLogger.WriteTimedLine("Limits        := [{0}, {1}]{2}",
 				lowerBoundary,
 				upperBoundary,
 				boundaryDiscovery ? "      (via auto discovery)" : "");
@@ -244,8 +244,8 @@ namespace BefunRep
 
 			if (!(cmda.IsSet("lower") || cmda.IsSet("upper")))
 			{
-				lowerBoundary = safe.getLowestValue();
-				upperBoundary = safe.getHighestValue();
+				lowerBoundary = safe.GetLowestValue();
+				upperBoundary = safe.GetHighestValue();
 
 				boundaryDiscovery = true;
 			}
@@ -294,7 +294,7 @@ namespace BefunRep
 		{
 			if (statsLevel >= 1) //############################################
 			{
-				SafeInfo info = safe.getInformations();
+				SafeInfo info = safe.GetInformations();
 
 				ConsoleLogger.WriteLine("  Statistics  ");
 				ConsoleLogger.WriteLine("##############");
@@ -307,7 +307,7 @@ namespace BefunRep
 
 				ConsoleLogger.WriteLine();
 
-				ConsoleLogger.WriteLineFormatted("{0}/{1} Representations found", info.nonNullCount, info.count);
+				ConsoleLogger.WriteLineFormatted("{0}/{1} Representations found", info.NonNullCount, info.Count);
 				ConsoleLogger.WriteLineFormatted("{0} Algorithms registered", RepCalculator.algorithms.Length);
 				ConsoleLogger.WriteLineFormatted("Run Duration = {0:hh} hours {0:mm} minutes {0:ss} seconds {0:ff} milliseconds", startTime - DateTime.Now);
 
@@ -328,34 +328,34 @@ namespace BefunRep
 					for (int i = 0; i < RepCalculator.algorithms.Length; i++)
 					{
 						ConsoleLogger.WriteLineFormatted("{0,6} Representations with algorithm {1,16} ({2:0.##}%)",
-							info.nonNullPerAlgorithm[i],
+							info.NonNullPerAlgorithm[i],
 							RepCalculator.algorithmNames[i],
-							info.nonNullPerAlgorithm[i] * 100d / info.count);
+							info.NonNullPerAlgorithm[i] * 100d / info.Count);
 					}
 
 					ConsoleLogger.WriteLine();
 
 					if (statsLevel >= 3) //####################################
 					{
-						ConsoleLogger.WriteLineFormatted("Average representation width = {0:0.###}", info.avgLen);
+						ConsoleLogger.WriteLineFormatted("Average representation width = {0:0.###}", info.AvgLen);
 
 						for (int i = 0; i < RepCalculator.algorithms.Length; i++)
 						{
 							ConsoleLogger.WriteLineFormatted("Average representation width with algorithm {0,16}  = {1:0.###}",
 								RepCalculator.algorithmNames[i],
-								info.avgLenPerAlgorithm[i]);
+								info.AvgLenPerAlgorithm[i]);
 						}
 
 						ConsoleLogger.WriteLine();
 
-						ConsoleLogger.WriteLineFormatted("Representation length (min|max) = [{0,3},{1,3}]", info.minLen, info.maxLen);
+						ConsoleLogger.WriteLineFormatted("Representation length (min|max) = [{0,3},{1,3}]", info.MinLen, info.MaxLen);
 
 						for (int i = 0; i < RepCalculator.algorithms.Length; i++)
 						{
 							ConsoleLogger.WriteLineFormatted("Representation length (min|max) for {0,16} = [{1,3},{2,3}]",
 								RepCalculator.algorithmNames[i],
-								info.minLenPerAlgorithm[i],
-								info.maxLenPerAlgorithm[i]);
+								info.MinLenPerAlgorithm[i],
+								info.MaxLenPerAlgorithm[i]);
 						}
 
 						ConsoleLogger.WriteLine();

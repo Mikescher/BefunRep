@@ -10,7 +10,18 @@ namespace BefunRep
 {
 	public class RepCalculator
 	{
-		public static readonly RepAlgorithm[] algorithms = new RepAlgorithm[]
+		public const byte ALGO_ID_BASE9          = 0;
+		public const byte ALGO_ID_FACTORIZATION  = 1;
+		public const byte ALGO_ID_CHAR           = 2;
+		public const byte ALGO_ID_STRINGIFY      = 3;
+		public const byte ALGO_ID_BASEN          = 4;
+		public const byte ALGO_ID_POWER          = 5;
+		public const byte ALGO_ID_DIGITADD       = 6;
+		public const byte ALGO_ID_SIMPLENEGATIVE = 7;
+		public const byte ALGO_ID_DIGITMULT      = 8;
+		public const byte ALGO_ID_CHARMULT       = 9;
+
+		public static readonly RepAlgorithm[] algorithms =
 		{
 			new Base9Algorithm(0),				// [0]
 			new FactorizationAlgorithm(1),		// [1]
@@ -47,7 +58,7 @@ namespace BefunRep
 				tester = new DummyResultTester();
 
 			foreach (var algo in algorithms)
-				algo.representations = rsafe;
+				algo.Representations = rsafe;
 
 			algorithmTime = Enumerable.Repeat(0L, algorithmTime.Length).ToArray();
 		}
@@ -59,11 +70,11 @@ namespace BefunRep
 			if (algonum < 0)
 				return calculate();
 
-			safe.start();
+			safe.Start();
 
 			found += calculateSingleAlgorithm(algonum);
 
-			safe.stop();
+			safe.Stop();
 
 			return found;
 		}
@@ -72,14 +83,14 @@ namespace BefunRep
 		{
 			int found = 0;
 
-			safe.start();
+			safe.Start();
 
 			for (int algonum = 0; algonum < algorithms.Length; algonum++)
 			{
 				found += calculateSingleAlgorithm(algonum);
 			}
 
-			safe.stop();
+			safe.Stop();
 
 			return found;
 		}
@@ -109,13 +120,13 @@ namespace BefunRep
 			bool found = false;
 
 			string outerror;
-			string before = safe.get(v);
-			string beforeAlgo = before == null ? null : algorithmNames[safe.getAlgorithm(v).Value];
+			string before = safe.GetRep(v);
+			string beforeAlgo = before == null ? null : algorithmNames[safe.GetAlgorithm(v).Value];
 			if (before == null)
 				before = "";
 			if (beforeAlgo == null)
 				beforeAlgo = "";
-			string result = algo.calculate(v);
+			string result = algo.Calculate(v);
 
 			if (result != null)
 			{

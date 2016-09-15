@@ -13,7 +13,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long value)
+		protected override string Get(long value)
 		{
 			if (value <= -(int)' ' && value >= -(int)'~' && value != -(int)'"')
 			{

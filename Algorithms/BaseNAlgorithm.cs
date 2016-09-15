@@ -18,7 +18,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long value)
+		protected override string Get(long value)
 		{
 			return Enumerable.Range(2, 8).Select(p => get(value, p)).Where(p => p != null).OrderBy(p => p.Length).FirstOrDefault();
 		}
@@ -52,12 +52,12 @@ namespace BefunRep.Algorithms
 				{
 					if (digit == 1 && !last)
 					{
-						p_num.Append(dig(befbase)); // Don't calculate 1 * $befbase ... directly write $befbase
+						p_num.Append(Dig(befbase)); // Don't calculate 1 * $befbase ... directly write $befbase
 						skipM_base = true;
 					}
 					else
 					{
-						p_num.Append(dig(digit));
+						p_num.Append(Dig(digit));
 					}
 				}
 				else
@@ -68,13 +68,13 @@ namespace BefunRep.Algorithms
 					}
 					else
 					{
-						p_num.Append(dig(befbase));
+						p_num.Append(Dig(befbase));
 						p_op.Append("*");
 					}
 
 					if (digit != 0) // if digit == 0 dont calculate +0
 					{
-						p_num.Append(dig(digit));
+						p_num.Append(Dig(digit));
 						p_op.Append("+");
 					}
 				}

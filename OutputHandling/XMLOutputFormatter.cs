@@ -22,8 +22,8 @@ namespace BefunRep.OutputHandling
 
 				for (long v = min; v < max; v++)
 				{
-					string rep = safe.get(v);
-					byte? algo = safe.getAlgorithm(v);
+					string rep = safe.GetRep(v);
+					byte? algo = safe.GetAlgorithm(v);
 
 					if (rep == null || algo == null)
 						continue;
@@ -47,8 +47,8 @@ namespace BefunRep.OutputHandling
 
 			for (long v = min; v < max; v++)
 			{
-				string rep = safe.get(v);
-				byte? algo = safe.getAlgorithm(v);
+				string rep = safe.GetRep(v);
+				byte? algo = safe.GetAlgorithm(v);
 
 				if (rep == null || algo == null)
 					continue;

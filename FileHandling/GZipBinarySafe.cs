@@ -31,22 +31,27 @@ namespace BefunRep.FileHandling
 			INITIAL_VALUE_END = max;
 		}
 
-		public override string get(long key)
+		public override string GetRep(long key)
 		{
-			return tempBinSafe.get(key);
+			return tempBinSafe.GetRep(key);
 		}
 
-		public override byte? getAlgorithm(long key)
+		public override byte? GetAlgorithm(long key)
 		{
-			return tempBinSafe.getAlgorithm(key);
+			return tempBinSafe.GetAlgorithm(key);
 		}
 
-		public override void put(long key, string representation, byte algorithm)
+		public override Tuple<byte, string> GetCombined(long key)
 		{
-			tempBinSafe.put(key, representation, algorithm);
+			return tempBinSafe.GetCombined(key);
 		}
 
-		public override void start()
+		public override void Put(long key, string representation, byte algorithm)
+		{
+			tempBinSafe.Put(key, representation, algorithm);
+		}
+
+		public override void Start()
 		{
 			tempFilePath = Path.Combine(Path.GetTempPath(), "repsafe-" + Guid.NewGuid().ToString("B") + ".bin");
 
@@ -58,27 +63,27 @@ namespace BefunRep.FileHandling
 				fstream = new FileStream(filepath, FileMode.Open);
 
 				tempBinSafe = new BinarySafe(tempFilePath, INITIAL_VALUE_START, INITIAL_VALUE_END);
-				tempBinSafe.start();
+				tempBinSafe.Start();
 			}
 			else
 			{
 				fstream = new FileStream(filepath, FileMode.CreateNew);
 
 				tempBinSafe = new BinarySafe(tempFilePath, INITIAL_VALUE_START, INITIAL_VALUE_END);
-				tempBinSafe.start();
+				tempBinSafe.Start();
 			}
 
-			valueStart = tempBinSafe.getLowestValue();
-			valueEnd = tempBinSafe.getHighestValue();
+			valueStart = tempBinSafe.GetLowestValue();
+			valueEnd = tempBinSafe.GetHighestValue();
 		}
 
-		public override void stop()
+		public override void Stop()
 		{
-			valueStart = tempBinSafe.getLowestValue();
-			valueEnd = tempBinSafe.getHighestValue();
+			valueStart = tempBinSafe.GetLowestValue();
+			valueEnd = tempBinSafe.GetHighestValue();
 
 			fstream.Close();
-			tempBinSafe.stop();
+			tempBinSafe.Stop();
 
 			ConsoleLogger.WriteLine("Closing gzipped safe");
 			if (tempBinSafe.Changed) GZipHelper.CompressFile(tempFilePath, filepath);
@@ -101,12 +106,12 @@ namespace BefunRep.FileHandling
 			}
 		}
 
-		public override long getLowestValue()
+		public override long GetLowestValue()
 		{
 			return valueStart;
 		}
 
-		public override long getHighestValue()
+		public override long GetHighestValue()
 		{
 			return valueEnd;
 		}

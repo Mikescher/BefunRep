@@ -4,44 +4,67 @@ namespace BefunRep.Algorithms
 {
 	public abstract class RepAlgorithm
 	{
-		public RepresentationSafe representations = null;
-		public readonly byte algorithmID;
+		public RepresentationSafe Representations = null;
+		public readonly byte AlgorithmID;
 
-		public RepAlgorithm(byte id)
+		protected RepAlgorithm(byte id)
 		{
-			this.algorithmID = id;
+			this.AlgorithmID = id;
 		}
 
-		public string calculate(long value)
+		public string Calculate(long value)
 		{
-			string result = get(value);
+			string result = Get(value);
 
-			if (result == null || result == "")
+			if (string.IsNullOrEmpty(result))
 			{
 				return null;
 			}
 
-			string old = representations.get(value);
+			var old = Representations.GetCombined(value);
 
-			if (result == old || (old != null && old.Length <= result.Length))
+			if (old == null)
 			{
+				// new value
+
+				Representations.Put(value, result, AlgorithmID);
+				return result;
+			}
+			else if (result == old.Item2)
+			{
+				// already in safe
+
+				return null;
+			}
+			else if (AlgorithmID != RepCalculator.ALGO_ID_STRINGIFY && old.Item2.Length == result.Length && old.Item1 == RepCalculator.ALGO_ID_STRINGIFY)
+			{
+				// non-stringmode is preffered
+
+				Representations.Put(value, result, AlgorithmID);
+				return result;
+			}
+			else if (old.Item2.Length <= result.Length)
+			{
+				// safe value is better
+
 				return null;
 			}
 			else
 			{
-				representations.put(value, result, algorithmID);
+				// improvement
 
+				Representations.Put(value, result, AlgorithmID);
 				return result;
 			}
 
 		}
 
-		protected char dig(long v)
+		protected char Dig(long v)
 		{
 			return (char)(v + '0');
 		}
 
-		protected char chrsign(long i)
+		protected char ChrSign(long i)
 		{
 			if (i < 0)
 				return '-';
@@ -51,6 +74,6 @@ namespace BefunRep.Algorithms
 				return '0';
 		}
 
-		public abstract string get(long value);
+		protected abstract string Get(long value);
 	}
 }

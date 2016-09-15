@@ -19,7 +19,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long value)
+		protected override string Get(long value)
 		{
 			if (value >= 0)
 			{
@@ -48,7 +48,7 @@ namespace BefunRep.Algorithms
 					continue;
 
 				if (current == null || (result.Length * (result.Length - 1) + 4) < current.Length)
-					current = "" + '"' + result + '"' + "*".Repeat(result.Length - 1) + dig(Math.Abs(i)) + chrsign(-i);
+					current = "" + '"' + result + '"' + "*".Repeat(result.Length - 1) + Dig(Math.Abs(i)) + ChrSign(-i);
 			}
 
 			for (int i = ' '; i <= '~'; i++)

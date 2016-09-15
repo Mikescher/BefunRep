@@ -22,7 +22,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long lit)
+		protected override string Get(long lit)
 		{
 			if (lit < 0)
 			{
@@ -31,14 +31,14 @@ namespace BefunRep.Algorithms
 
 			if (lit >= 0 && lit <= 9)
 			{
-				return "" + dig(lit);
+				return "" + Dig(lit);
 			}
 
 			if (lit < MIN_ASCII && lit >= (MIN_ASCII - 9))
 			{
 				if (lit + 9 == '"')
 				{
-					string p = get(lit + 8);
+					string p = Get(lit + 8);
 
 					if (p == null)
 						return null;
@@ -47,7 +47,7 @@ namespace BefunRep.Algorithms
 				}
 				else
 				{
-					string p = get(lit + 9);
+					string p = Get(lit + 9);
 
 					if (p == null)
 						return null;

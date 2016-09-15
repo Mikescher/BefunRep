@@ -14,8 +14,8 @@ namespace BefunRep.OutputHandling
 
 		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize, long omin, long omax)
 		{
-			long min = Math.Max(safe.getLowestValue(), omin);
-			long max = Math.Min(safe.getHighestValue(), omax);
+			long min = Math.Max(safe.GetLowestValue(), omin);
+			long max = Math.Min(safe.GetHighestValue(), omax);
 
 			if (maxOutputSize < 0 || (max - min) <= maxOutputSize)
 			{

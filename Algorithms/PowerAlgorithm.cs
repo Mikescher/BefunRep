@@ -16,7 +16,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long value)
+		protected override string Get(long value)
 		{
 			if (value > 0)
 			{
@@ -41,7 +41,7 @@ namespace BefunRep.Algorithms
 				if (PowL(factor, power) != value)
 					continue;
 
-				string factor_rep = representations.get(factor);
+				string factor_rep = Representations.GetRep(factor);
 
 				if (factor_rep == null)
 					continue;

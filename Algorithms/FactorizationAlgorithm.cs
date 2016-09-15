@@ -16,7 +16,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long lit)
+		protected override string Get(long lit)
 		{
 			if (lit < 0)
 			{
@@ -38,7 +38,7 @@ namespace BefunRep.Algorithms
 
 			if (a < 10)
 			{
-				p.Append(dig(a));
+				p.Append(Dig(a));
 				return p;
 			}
 
@@ -47,7 +47,7 @@ namespace BefunRep.Algorithms
 				if (a % i == 0)
 				{
 					getFactors(p, a / i);
-					p.Append(dig(i));
+					p.Append(Dig(i));
 					p.Append('*');
 					return p;
 				}
@@ -58,7 +58,7 @@ namespace BefunRep.Algorithms
 				if ((a - i) % 9 == 0)
 				{
 					getFactors(p, a - i);
-					p.Append(dig(i));
+					p.Append(Dig(i));
 					p.Append('+');
 					return p;
 				}

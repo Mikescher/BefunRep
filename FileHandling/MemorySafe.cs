@@ -23,7 +23,7 @@ namespace BefunRep.FileHandling
 			// NOP
 		}
 
-		public override string get(long key)
+		public override string GetRep(long key)
 		{
 			if (representations.ContainsKey(key))
 				return representations[key].Item2;
@@ -31,7 +31,7 @@ namespace BefunRep.FileHandling
 				return null;
 		}
 
-		public override byte? getAlgorithm(long key)
+		public override byte? GetAlgorithm(long key)
 		{
 			if (representations.ContainsKey(key))
 				return representations[key].Item1;
@@ -39,19 +39,27 @@ namespace BefunRep.FileHandling
 				return null;
 		}
 
-		public override void put(long key, string representation, byte algorithm)
+		public override Tuple<byte, string> GetCombined(long key)
+		{
+			if (representations.ContainsKey(key))
+				return representations[key];
+			else
+				return null;
+		}
+
+		public override void Put(long key, string representation, byte algorithm)
 		{
 			representations[key] = Tuple.Create(algorithm, representation);
 
 			safe();
 		}
 
-		public override void start()
+		public override void Start()
 		{
 			//
 		}
 
-		public override void stop()
+		public override void Stop()
 		{
 			safe();
 		}
@@ -61,12 +69,12 @@ namespace BefunRep.FileHandling
 			// NOP
 		}
 
-		public override long getLowestValue()
+		public override long GetLowestValue()
 		{
 			return (representations.Count == 0) ? 0 : representations.Keys.Min();
 		}
 
-		public override long getHighestValue()
+		public override long GetHighestValue()
 		{
 			return (representations.Count == 0) ? 0 : representations.Keys.Max();
 		}

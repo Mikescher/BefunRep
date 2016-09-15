@@ -5,44 +5,45 @@ namespace BefunRep.FileHandling
 {
 	public struct SafeInfo
 	{
-		public long low;
-		public long high;
+		public long LowestValue;
+		public long HighestValue;
 
-		public long count;
+		public long Count;
 
-		public long nonNullCount;
-		public long[] nonNullPerAlgorithm;
+		public long NonNullCount;
+		public long[] NonNullPerAlgorithm;
 
-		public long totalLen;
-		public long[] totalLenPerAlgorithm;
+		public long TotalLen;
+		public long[] TotalLenPerAlgorithm;
 
-		public double avgLen;
-		public double[] avgLenPerAlgorithm;
+		public double AvgLen;
+		public double[] AvgLenPerAlgorithm;
 
-		public int minLen;
-		public int[] minLenPerAlgorithm;
+		public int MinLen;
+		public int[] MinLenPerAlgorithm;
 
-		public int maxLen;
-		public int[] maxLenPerAlgorithm;
+		public int MaxLen;
+		public int[] MaxLenPerAlgorithm;
 	}
 
 	public abstract class RepresentationSafe
 	{
-		public abstract string get(long key);
-		public abstract byte? getAlgorithm(long key);
-		public abstract void put(long key, string representation, byte algorithm);
+		public abstract string GetRep(long key);
+		public abstract byte? GetAlgorithm(long key);
+		public abstract Tuple<byte,string> GetCombined(long key);
+		public abstract void Put(long key, string representation, byte algorithm);
 
-		public abstract void start();
-		public abstract void stop();
+		public abstract void Start();
+		public abstract void Stop();
 		public abstract void LightLoad();
 
-		public abstract long getLowestValue();
-		public abstract long getHighestValue();
+		public abstract long GetLowestValue();
+		public abstract long GetHighestValue();
 
-		public SafeInfo getInformations()
+		public SafeInfo GetInformations()
 		{
-			long low = getLowestValue();
-			long high = getHighestValue();
+			long low = GetLowestValue();
+			long high = GetHighestValue();
 
 			long nonNullCount = 0;
 			long[] nonNullPerAlgorithm = Enumerable.Repeat(0L, RepCalculator.algorithms.Length).ToArray();
@@ -58,17 +59,17 @@ namespace BefunRep.FileHandling
 
 			for (long i = low; i < high; i++)
 			{
-				string rep = get(i);
+				string rep = GetRep(i);
 
 				if (rep == null)
 					continue;
 
-				byte? _algo = getAlgorithm(i).Value;
+				byte? algoOptional = GetAlgorithm(i);
 
-				if (_algo == null)
+				if (algoOptional == null)
 					continue;
 
-				byte algo = _algo.Value;
+				byte algo = algoOptional.Value;
 
 				nonNullCount++;
 				nonNullPerAlgorithm[algo]++;
@@ -116,66 +117,66 @@ namespace BefunRep.FileHandling
 
 			return new SafeInfo
 			{
-				low = low,
-				high = high,
-				count = high - low,
-				nonNullCount = nonNullCount,
-				nonNullPerAlgorithm = nonNullPerAlgorithm,
-				totalLen = totalLen,
-				totalLenPerAlgorithm = totalLenPerAlgorithm,
-				minLen = minLen,
-				minLenPerAlgorithm = minLenPerAlgorithm,
-				maxLen = maxLen,
-				maxLenPerAlgorithm = maxLenPerAlgorithm,
-				avgLen = avgLen,
-				avgLenPerAlgorithm = avgLenPerAlgorithm,
+				LowestValue = low,
+				HighestValue = high,
+				Count = high - low,
+				NonNullCount = nonNullCount,
+				NonNullPerAlgorithm = nonNullPerAlgorithm,
+				TotalLen = totalLen,
+				TotalLenPerAlgorithm = totalLenPerAlgorithm,
+				MinLen = minLen,
+				MinLenPerAlgorithm = minLenPerAlgorithm,
+				MaxLen = maxLen,
+				MaxLenPerAlgorithm = maxLenPerAlgorithm,
+				AvgLen = avgLen,
+				AvgLenPerAlgorithm = avgLenPerAlgorithm,
 			};
 		}
 
-		public long getNonNullRepresentations()
+		public long GetNonNullRepresentations()
 		{
-			long low = getLowestValue();
-			long high = getHighestValue();
+			long low = GetLowestValue();
+			long high = GetHighestValue();
 
 			long count = 0;
 
 			for (long i = low; i < high; i++)
 			{
-				if (get(i) != null)
+				if (GetRep(i) != null)
 					count++;
 			}
 
 			return count;
 		}
 
-		public long countRepresentationsPerAlgorithm(int p)
+		public long CountRepresentationsPerAlgorithm(int p)
 		{
-			long low = getLowestValue();
-			long high = getHighestValue();
+			long low = GetLowestValue();
+			long high = GetHighestValue();
 
 			long count = 0;
 
 			for (long i = low; i < high; i++)
 			{
-				if (get(i) != null && getAlgorithm(i) == p)
+				if (GetRep(i) != null && GetAlgorithm(i) == p)
 					count++;
 			}
 
 			return count;
 		}
 
-		public double getAverageRepresentationWidth()
+		public double GetAverageRepresentationWidth()
 		{
-			long low = getLowestValue();
-			long high = getHighestValue();
+			long low = GetLowestValue();
+			long high = GetHighestValue();
 
 			long count = 0;
 			long len = 0;
 
 			for (long i = low; i < high; i++)
 			{
-				string rep = get(i);
-				if (get(i) != null)
+				string rep = GetRep(i);
+				if (GetRep(i) != null)
 				{
 					count++;
 					len += rep.Length;
@@ -188,18 +189,18 @@ namespace BefunRep.FileHandling
 			return len / count;
 		}
 
-		public double getAverageRepresentationWidthPerAlgorithm(int p)
+		public double GetAverageRepresentationWidthPerAlgorithm(int p)
 		{
-			long low = getLowestValue();
-			long high = getHighestValue();
+			long low = GetLowestValue();
+			long high = GetHighestValue();
 
 			long count = 0;
 			long len = 0;
 
 			for (long i = low; i < high; i++)
 			{
-				string rep = get(i);
-				if (get(i) != null && getAlgorithm(i) == p)
+				string rep = GetRep(i);
+				if (GetRep(i) != null && GetAlgorithm(i) == p)
 				{
 					count++;
 					len += rep.Length;

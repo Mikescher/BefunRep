@@ -14,7 +14,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long value)
+		protected override string Get(long value)
 		{
 			StringBuilder p = new StringBuilder();
 

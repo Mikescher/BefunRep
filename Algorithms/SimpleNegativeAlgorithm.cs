@@ -13,7 +13,7 @@ namespace BefunRep.Algorithms
 			// NOP
 		}
 
-		public override string get(long value)
+		protected override string Get(long value)
 		{
 			if (value >= 0)
 				return null;
@@ -22,12 +22,12 @@ namespace BefunRep.Algorithms
 
 			for (int i = 0; i <= 9; i++)
 			{
-				string rep = representations.get(-value + i);
+				string rep = Representations.GetRep(-value + i);
 				if (rep == null)
 					continue;
 
 				if (best == null || rep.Length + 2 < best.Length)
-					best = dig(i) + rep + "-";
+					best = Dig(i) + rep + "-";
 			}
 
 			return best;
