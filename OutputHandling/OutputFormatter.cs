@@ -113,17 +113,17 @@ namespace BefunRep.OutputHandling
 
 			foreach (var f in files)
 			{
-				OutputStructured(safe, Path.GetDirectoryName(filepath), fileformat, f);
+				OutputStructured(safe, Path.GetDirectoryName(filepath), fileformat, digitLen, f);
 			}
 		}
 
-		private void OutputStructured(RepresentationSafe safe, string filepath, string filenameformat, OutputFileStruct ofs)
+		private void OutputStructured(RepresentationSafe safe, string filepath, string filenameformat, int padLen, OutputFileStruct ofs)
 		{
 			if (ofs.Index == -1)
 			{
 				foreach (var f in ofs.Children)
 				{
-					OutputStructured(safe, Path.Combine(filepath, ofs.Min.ToString()), filenameformat, f);
+					OutputStructured(safe, Path.Combine(filepath, ofs.Min.ToString().PadLeft(padLen, '0')), filenameformat, padLen, f);
 				}
 			}
 			else

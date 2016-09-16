@@ -27,7 +27,7 @@ function getFilePath(number) {
   for(var i = 0; i < FOLDER_DEPTH; i++) {
       mod *= PARTITION_SIZE;
       n = Math.floor(n / mod) * mod;
-      path = n + "/" + path;
+      path = leftpad(n, PARTITION_PADDING) + "/" + path;
   }
 
   return BASE_PATH + path;
