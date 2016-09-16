@@ -9,12 +9,12 @@ namespace BefunRep.OutputHandling
 {
 	public abstract class OutputFormatter
 	{
-		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize, long maxFileCount, long omin, long omax)
+		public virtual void Output(RepresentationSafe safe, string filepath, long maxOutputSize, int maxFileCount, long omin, long omax)
 		{
 			long min = Math.Max(safe.GetLowestValue(), omin);
 			long max = Math.Min(safe.GetHighestValue(), omax);
 
-			maxFileCount = Math.Min(maxFileCount, 16);
+			maxFileCount = Math.Max(maxFileCount, 16);
 
 			if (maxOutputSize < 0 || (max - min) <= maxOutputSize)
 			{
@@ -68,7 +68,7 @@ namespace BefunRep.OutputHandling
 			public List<OutputFileStruct> Children;
 		}
 
-		private void OutputStructured(RepresentationSafe safe, string filepath, long min, long max, long maxOutputSize, long maxFileCount)
+		private void OutputStructured(RepresentationSafe safe, string filepath, long min, long max, long maxOutputSize, int maxFileCount)
 		{
 			List<OutputFileStruct> files = new List<OutputFileStruct>();
 
@@ -91,7 +91,7 @@ namespace BefunRep.OutputHandling
 				for (int i = 0; i < files.Count;)
 				{
 					int iStart = i;
-					int iCount = Math.Min(files.Count - i, 10);
+					int iCount = Math.Min(files.Count - i, maxFileCount);
 					filesCombined.Add(new OutputFileStruct
 					{
 						Index = -1,

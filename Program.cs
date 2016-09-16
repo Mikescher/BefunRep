@@ -26,7 +26,7 @@ namespace BefunRep
 		private string safepath;
 		private string outpath;
 		private long maxoutputsize;
-		private long maxfileperfolder;
+		private int maxfileperfolder;
 		private long? outputminimum;
 		private long? outputmaximum;
 		private bool quiet;
@@ -298,7 +298,7 @@ namespace BefunRep
 			iterations = cmda.GetIntDefault("iterations", 1);
 			logpath = cmda.GetStringDefault("log", null);
 			maxoutputsize = cmda.GetLongDefault("maxoutput", -1);
-			maxfileperfolder = cmda.GetLongDefault("maxfilesperfolder", 512);
+			maxfileperfolder = cmda.GetIntDefault("maxfilesperfolder", 512);
 			outputminimum = cmda.GetLongDefaultNull("outmin");
 			outputmaximum = cmda.GetLongDefaultNull("outmax");
 			return cmda;

@@ -4,7 +4,7 @@ namespace BefunRep.OutputHandling
 {
 	public class DummyOutputFormatter : OutputFormatter
 	{
-		public override void Output(RepresentationSafe safe, string filepath, long maxOutputSize, long maxFileCount, long omin, long omax)
+		public override void Output(RepresentationSafe safe, string filepath, long maxOutputSize, int maxFileCount, long omin, long omax)
 		{
 			// Do nothing
 		}
