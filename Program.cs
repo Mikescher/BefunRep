@@ -26,6 +26,7 @@ namespace BefunRep
 		private string safepath;
 		private string outpath;
 		private long maxoutputsize;
+		private long maxfileperfolder;
 		private long? outputminimum;
 		private long? outputmaximum;
 		private bool quiet;
@@ -108,7 +109,7 @@ namespace BefunRep
 				{
 					if (outpath != null)
 					{
-						formatter.Output(safe, outpath, maxoutputsize, outputminimum ?? long.MinValue, outputmaximum ?? long.MaxValue);
+						formatter.Output(safe, outpath, maxoutputsize, maxfileperfolder, outputminimum ?? long.MinValue, outputmaximum ?? long.MaxValue);
 
 						ConsoleLogger.WriteTimedLine("Outputting Finished.");
 					}
@@ -184,6 +185,7 @@ namespace BefunRep
 			ConsoleLogger.WriteLine("-stats=[0-3]");
 			ConsoleLogger.WriteLine("-log={directory of file}");
 			ConsoleLogger.WriteLine("-maxoutput=[-1 | 1-n]");
+			ConsoleLogger.WriteLine("-maxfilesperfolder=[1-n]");
 			ConsoleLogger.WriteLine("-outmin=[int]");
 			ConsoleLogger.WriteLine("-outmax=[int]");
 			ConsoleLogger.WriteLine("-help");
@@ -201,31 +203,33 @@ namespace BefunRep
 				upperBoundary,
 				boundaryDiscovery ? "      (via auto discovery)" : "");
 
-			ConsoleLogger.WriteTimedLine("Iterations    := {0}", iterations < 0 ? "INF" : (iterations == 0 ? "NONE" : (iterations.ToString())));
+			ConsoleLogger.WriteTimedLine("Iterations        := {0}", iterations < 0 ? "INF" : (iterations == 0 ? "NONE" : (iterations.ToString())));
 
-			ConsoleLogger.WriteTimedLine("Testing       := {0}", testResults.ToString().ToLower());
+			ConsoleLogger.WriteTimedLine("Testing           := {0}", testResults.ToString().ToLower());
 
-			ConsoleLogger.WriteTimedLine("Reset         := {0}", doReset.ToString().ToLower());
+			ConsoleLogger.WriteTimedLine("Reset             := {0}", doReset.ToString().ToLower());
 
-			ConsoleLogger.WriteTimedLine("Quiet         := {0}", quiet.ToString().ToLower());
+			ConsoleLogger.WriteTimedLine("Quiet             := {0}", quiet.ToString().ToLower());
 
-			ConsoleLogger.WriteTimedLine("Statistics    := {0}", new[] { "none", "simple", "verbose", "all" }[statsLevel]);
+			ConsoleLogger.WriteTimedLine("Statistics        := {0}", new[] { "none", "simple", "verbose", "all" }[statsLevel]);
 
-			ConsoleLogger.WriteTimedLine("Algorithm     := {0}", algorithm == -1 ? "all" : RepCalculator.AlgorithmNames[algorithm]);
+			ConsoleLogger.WriteTimedLine("Algorithm         := {0}", algorithm == -1 ? "all" : RepCalculator.AlgorithmNames[algorithm]);
 
-			ConsoleLogger.WriteTimedLine("Safetype      := {0}", safe.GetType().Name);
+			ConsoleLogger.WriteTimedLine("Safetype          := {0}", safe.GetType().Name);
 
-			ConsoleLogger.WriteTimedLine("Safepath      := {0}", safepath);
+			ConsoleLogger.WriteTimedLine("Safepath          := {0}", safepath);
 
-			ConsoleLogger.WriteTimedLine("Outputtype    := {0}", formatter.GetType().Name);
+			ConsoleLogger.WriteTimedLine("Outputtype        := {0}", formatter.GetType().Name);
 
-			ConsoleLogger.WriteTimedLine("Outputrange   := {0}", ((outputminimum ?? outputmaximum) == null) ? ("[ALL]") : ("[" + outputminimum + " - " + outputmaximum + "]"));
+			ConsoleLogger.WriteTimedLine("Outputrange       := {0}", ((outputminimum ?? outputmaximum) == null) ? ("[ALL]") : ("[" + outputminimum + " - " + outputmaximum + "]"));
 
-			ConsoleLogger.WriteTimedLine("Outputpath    := {0}", outpath);
+			ConsoleLogger.WriteTimedLine("Outputpath        := {0}", outpath);
 
-			ConsoleLogger.WriteTimedLine("MaxOutputSize := {0}", maxoutputsize);
+			ConsoleLogger.WriteTimedLine("MaxOutputSize     := {0}", maxoutputsize);
 
-			ConsoleLogger.WriteTimedLine("Logpath       := {0}", logpath ?? "<NULL>");
+			ConsoleLogger.WriteTimedLine("MaxFilesPerFolder := {0}", maxfileperfolder);
+			
+			ConsoleLogger.WriteTimedLine("Logpath           := {0}", logpath ?? "<NULL>");
 
 			ConsoleLogger.WriteLine();
 		}
@@ -294,6 +298,7 @@ namespace BefunRep
 			iterations = cmda.GetIntDefault("iterations", 1);
 			logpath = cmda.GetStringDefault("log", null);
 			maxoutputsize = cmda.GetLongDefault("maxoutput", -1);
+			maxfileperfolder = cmda.GetLongDefault("maxfileperfolder", 512);
 			outputminimum = cmda.GetLongDefaultNull("outmin");
 			outputmaximum = cmda.GetLongDefaultNull("outmax");
 			return cmda;

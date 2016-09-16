@@ -11,6 +11,8 @@ namespace BefunRep.OutputHandling
 		{
 			using (StreamWriter writer = new StreamWriter(filepath))
 			{
+				writer.NewLine = "\n";
+
 				for (long v = min; v < max; v++)
 				{
 					var rep = safe.GetCombined(v);
