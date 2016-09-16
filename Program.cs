@@ -75,29 +75,35 @@ namespace BefunRep
 
 			//##############
 
-			ConsoleLogger.WriteTimedLine("Calculations Started.");
-			ConsoleLogger.WriteLine();
-			ConsoleLogger.WriteLine();
-
-			for (int i = 0; i < iterations || iterations < 0; i++) // iterations neg => Run until no changes
+			if (iterations != 0)
 			{
-				int foundcount = r.Calculate(algorithm);
-				founds.Add(foundcount);
-
+				ConsoleLogger.WriteTimedLine("Calculations Started.");
 				ConsoleLogger.WriteLine();
-				ConsoleLogger.WriteTimedLine("Iteration {0} Finished (+{1})", i, foundcount);
 				ConsoleLogger.WriteLine();
 
-				if (foundcount == 0)
-					break;
+				for (int i = 0; i < iterations || iterations < 0; i++) // iterations neg => Run until no changes
+				{
+					int foundcount = r.Calculate(algorithm);
+					founds.Add(foundcount);
+
+					ConsoleLogger.WriteLine();
+					ConsoleLogger.WriteTimedLine("Iteration {0} Finished (+{1})", i, foundcount);
+					ConsoleLogger.WriteLine();
+
+					if (foundcount == 0)
+						break;
+				}
+
+				ConsoleLogger.WriteTimedLine("Calculations Finished.");
+				ConsoleLogger.WriteLine();
 			}
 
-			ConsoleLogger.WriteTimedLine("Caclulations Finished.");
-			ConsoleLogger.WriteLine();
-			ConsoleLogger.WriteTimedLine("Outputting Started.");
+			//##############
 
 			if (outpath != null || statsLevel > 0)
 			{
+				ConsoleLogger.WriteTimedLine("Outputting Started.");
+
 				safe.Start();
 				{
 					if (outpath != null)
@@ -115,10 +121,11 @@ namespace BefunRep
 					}
 				}
 				safe.Stop();
+
+				ConsoleLogger.WriteLine();
+				ConsoleLogger.WriteLine();
 			}
 
-			ConsoleLogger.WriteLine();
-			ConsoleLogger.WriteLine();
 
 			ConsoleLogger.Save(); // ############# ENDE #############
 
@@ -128,12 +135,12 @@ namespace BefunRep
 
 		private static void PrintAnyKeyMessage()
 		{
-			ConsoleLogger.WriteLine("Press any Key to exit.");
+//			ConsoleLogger.WriteLine("Press any Key to exit.");
 
-			ConsoleLogger.WriteLine();
-			ConsoleLogger.WriteLine();
+//			ConsoleLogger.WriteLine();
+//			ConsoleLogger.WriteLine();
 
-			Console.ReadLine();
+//			Console.ReadLine();
 		}
 
 		private static void PrintHeader()

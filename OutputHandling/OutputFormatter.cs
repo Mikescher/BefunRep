@@ -23,9 +23,12 @@ namespace BefunRep.OutputHandling
 				string fpStart = filepath.Substring(0, filepath.Length - Path.GetExtension(filepath).Length);
 				string fpEnd = Path.GetExtension(filepath);
 
+				int digitLen = Math.Max(4, max.ToString().Length);
+				var fileformat = "{0}_{1:" + new string('0', digitLen) + "}{2}";
+
 				for (int i = 1; min < max; i++)
 				{
-					string segmentedFilepath = string.Format("{0}_{1:0000}{2}", fpStart, i, fpEnd);
+					string segmentedFilepath = string.Format(fileformat, fpStart, i, fpEnd);
 					ConsoleLogger.WriteTimedLine("Outputting to {0}", Path.GetFileName(segmentedFilepath));
 
 					Output(safe, segmentedFilepath, min, Math.Min(min + maxOutputSize, max));

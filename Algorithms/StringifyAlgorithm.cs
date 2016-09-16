@@ -115,6 +115,9 @@ namespace BefunRep.Algorithms
 
 			//##########################################################################
 
+			List<char> backupStr = null;
+			List<StripOp> backupOps = null;
+
 			for (char curr = MAX_ASCII; curr >= MIN_ASCII; curr--)
 			{
 				if (curr == '"')
@@ -133,7 +136,15 @@ namespace BefunRep.Algorithms
 						str.Insert(0, curr);
 						ops.Add(StripOp.Mult);
 
-						return true;
+						if (str.Contains(' '))
+						{
+							backupOps = ops;
+							backupStr = str;
+						}
+						else
+						{
+							return true;
+						}
 					}
 				}
 			}
@@ -157,8 +168,23 @@ namespace BefunRep.Algorithms
 					str.Insert(0, curr);
 					ops.Add(StripOp.Add);
 
-					return true;
+					if (str.Contains(' '))
+					{
+						backupOps = ops;
+						backupStr = str;
+					}
+					else
+					{
+						return true;
+					}
 				}
+			}
+
+			if (backupStr != null)
+			{
+				str = backupStr;
+				ops = backupOps;
+				return true;
 			}
 
 			str = null;

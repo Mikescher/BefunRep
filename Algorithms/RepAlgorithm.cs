@@ -43,6 +43,13 @@ namespace BefunRep.Algorithms
 				Representations.Put(value, result, AlgorithmID);
 				return result;
 			}
+			else if (!result.Contains(" ") && old.Length == result.Length && old.Representation.Contains(" "))
+			{
+				// non-space is preffered
+
+				Representations.Put(value, result, AlgorithmID);
+				return result;
+			}
 			else if (old.Length <= result.Length)
 			{
 				// safe value is better

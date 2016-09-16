@@ -18,7 +18,7 @@ namespace BefunRep.OutputHandling
 					if (rep == null)
 						continue;
 
-					writer.WriteLine("{0:X}\t{1}", rep.Algorithm, rep.Representation);
+					writer.WriteLine("{0:X}\t{1}", v, rep.Representation);
 				}
 			}
 		}
@@ -34,7 +34,7 @@ namespace BefunRep.OutputHandling
 				if (rep == null)
 					continue;
 
-				writer.AppendLine(String.Format("{0:X}\t{1}", rep.Algorithm, rep.Representation));
+				writer.AppendLine(String.Format("{0:X}\t{1}", v, rep.Representation));
 			}
 
 			return writer.ToString();
