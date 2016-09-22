@@ -69,8 +69,8 @@ You don't need other [BefunUtils](https://github.com/Mikescher/BefunUtils) proje
 Theoretically you can only clone this repository and run it.  
 But it could be useful to get the whole BefunUtils solution like described [here](https://github.com/Mikescher/BefunUtils/blob/master/README.md)  
 
-Commandline parameters
-======================
+Command line parameters
+=======================
 
 Parameter   | Description
 ------------|-------------------------------------------
@@ -87,7 +87,6 @@ stats       | The amount of statistics to display at the end
 log         | The log file where every console output is logged. This can either be a file or a directory.
 maxoutput   | The maximum number of numbers in a single output file before it is split into multiple files.
 help        | Show the summary of all commands
-
 
 
 Contributions
