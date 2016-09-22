@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/Mikescher/BefunUtils/master/README-FILES/icon_BefunRep.png) BefunRep
+![](https://raw.githubusercontent.com/Mikescher/BefunUtils/master/README-FILES/icon_BefunRep.png) BefunRep [![Build status](https://ci.appveyor.com/api/projects/status/1xhmo6m4qpawo5vi/branch/master?svg=true)](https://ci.appveyor.com/project/Mikescher/befunrep/branch/master)
 ========
 
 A common problem with Befunge is the *(efficient)* representation of big numbers. *(= putting a number on the stack with the least amount of instructions)*
@@ -58,6 +58,8 @@ Download
 
 You can download the binaries from my website [www.mikescher.com](http://www.mikescher.com/programs/view/BefunUtils)
 
+Or you can download the latest (nightly) version from the **[AppVeyor build server](https://ci.appveyor.com/project/Mikescher/BefunExec/build/artifacts)**
+
 Set Up
 ======
 
@@ -85,3 +87,10 @@ stats       | The amount of statistics to display at the end
 log         | The log file where every console output is logged. This can either be a file or a directory.
 maxoutput   | The maximum number of numbers in a single output file before it is split into multiple files.
 help        | Show the summary of all commands
+
+
+
+Contributions
+=============
+
+Yes, please
