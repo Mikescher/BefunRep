@@ -5,7 +5,7 @@ A common problem with Befunge is the *(efficient)* representation of big numbers
 
 BefunRep is a commandline tool to generate a list of representations for all numbers in a specified range. I'm pretty sure the calculation of the optimal representation is a NP complete. But BefunRep tries to to find good representations for all numbers via various algorithms. And it does a pretty good job. It finds for all the numbers between -1 million and +1 million representations with a maximum of eleven characters.
 
-![](https://raw.githubusercontent.com/Mikescher/BefunUtils/master/README-FILES/BefunRep_Main.png)
+![](https://raw.githubusercontent.com/Mikescher/BefunUtils/master/README-FILES/BefunRep_Main.png)  
 *(you can access an example dataset [online with this webpage](http://mikescher.github.io/Befunge_Number_Representations/))*
 
 Here an example call to BefunRep:
